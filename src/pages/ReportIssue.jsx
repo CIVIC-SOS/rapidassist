@@ -167,6 +167,7 @@ function ReportIssue() {
         }}>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
 
+
             {step === 'camera' && (
                 <div style={{ width: '100%', maxWidth: '800px', position: 'relative' }}>
                     <div style={{
@@ -182,6 +183,7 @@ function ReportIssue() {
                             autoPlay
                             playsInline
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+
                         />
                         <div style={{
                             position: 'absolute',
@@ -210,6 +212,7 @@ function ReportIssue() {
                                 onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.92)'}
                                 onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
+
                                 <div style={{
                                     width: '56px',
                                     height: '56px',
@@ -274,6 +277,7 @@ function ReportIssue() {
                                 style={{ minWidth: '180px' }}
                             >
                                 {isAnalyzing ? '🤖 Analyzing...' : isUploading ? 'Uploading...' : '✨ Analyze & Report'}
+
                             </button>
                         </div>
                     </div>
