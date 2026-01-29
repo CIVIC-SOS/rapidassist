@@ -25,13 +25,15 @@ function Header() {
                 </Link>
 
                 <nav className={`nav ${showMobileMenu ? 'mobile-open' : ''}`}>
-                    <NavLink
-                        to="/"
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                        onClick={closeMobileMenu}
-                    >
-                        Home
-                    </NavLink>
+                    {!isAdmin && (
+                        <NavLink
+                            to="/"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            onClick={closeMobileMenu}
+                        >
+                            Home
+                        </NavLink>
+                    )}
 
                     <NavLink
                         to="/community"
@@ -41,16 +43,18 @@ function Header() {
                         Community
                     </NavLink>
 
+                    {isAuthenticated && !isAdmin && (
+                        <NavLink
+                            to="/report"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            onClick={closeMobileMenu}
+                        >
+                            Report
+                        </NavLink>
+                    )}
+
                     {isAuthenticated && (
                         <>
-                            <NavLink
-                                to="/report"
-                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                                onClick={closeMobileMenu}
-                            >
-                                Report
-                            </NavLink>
-
                             {isAdmin ? (
                                 <NavLink
                                     to="/admin"

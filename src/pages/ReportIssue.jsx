@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useReports } from '../context/ReportsContext'
@@ -14,11 +14,11 @@ function ReportIssue() {
 
     // UI States
     const [step, setStep] = useState('camera') // camera, preview, form
-    const [stream, setStream] = useState(null)
     const [capturedImage, setCapturedImage] = useState(null)
     const [isUploading, setIsUploading] = useState(false)
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [uploadedUrl, setUploadedUrl] = useState('')
+    const [isLocating, setIsLocating] = useState(false)
 
     // Form State
     const [formData, setFormData] = useState({
@@ -31,6 +31,7 @@ function ReportIssue() {
 
     const videoRef = useRef(null)
     const canvasRef = useRef(null)
+    const streamRef = useRef(null) // Use ref to track stream for proper cleanup
 
     const categories = [
         'Roads & Potholes',
@@ -43,21 +44,32 @@ function ReportIssue() {
         'Other'
     ]
 
-    // Initialize Camera
-    useEffect(() => {
-        if (step === 'camera') {
-            startCamera()
+    // Stop camera function - immediate cleanup
+    const stopCamera = useCallback(() => {
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop())
+            streamRef.current = null
         }
-        return () => stopCamera()
-    }, [step])
+        if (videoRef.current) {
+            videoRef.current.srcObject = null
+            videoRef.current.load() // Force immediate cleanup
+        }
+    }, [])
 
-    async function startCamera() {
+    // Start camera function
+    const startCamera = useCallback(async () => {
         try {
+            // Immediately stop any existing stream first
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop())
+                streamRef.current = null
+            }
+            
             const mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
                 audio: false
             })
-            setStream(mediaStream)
+            streamRef.current = mediaStream
             if (videoRef.current) {
                 videoRef.current.srcObject = mediaStream
             }
@@ -65,13 +77,92 @@ function ReportIssue() {
             console.error('Camera access error:', err)
             error('Unable to access camera. Please check permissions.')
         }
-    }
+    }, [error])
 
-    function stopCamera() {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop())
-            setStream(null)
+    // Initialize Camera and Fetch Location when step changes
+    useEffect(() => {
+        if (step === 'camera') {
+            startCamera()
+            fetchLocation()
+        } else {
+            // Immediate camera shutdown when not on camera step
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop())
+                streamRef.current = null
+            }
+            if (videoRef.current) {
+                videoRef.current.srcObject = null
+                videoRef.current.load()
+            }
         }
+    }, [step, startCamera])
+
+    // Immediate cleanup on component unmount or navigation
+    useEffect(() => {
+        return () => {
+            // Immediate cleanup without function call overhead
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop())
+                streamRef.current = null
+            }
+        }
+    }, [])
+
+    // Page visibility change handler to stop camera when tab is hidden
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden && streamRef.current) {
+                // Stop camera immediately when tab becomes hidden
+                streamRef.current.getTracks().forEach(track => track.stop())
+                streamRef.current = null
+                if (videoRef.current) {
+                    videoRef.current.srcObject = null
+                    videoRef.current.load()
+                }
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibilityChange)
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
+        }
+    }, [])
+
+    async function fetchLocation() {
+        setIsLocating(true)
+        if (!navigator.geolocation) {
+            console.warn('Geolocation not supported')
+            setIsLocating(false)
+            return
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords
+                let address = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
+
+                try {
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+                    )
+                    const data = await response.json()
+                    if (data.display_name) {
+                        // Get a concise address
+                        address = data.display_name.split(',').slice(0, 3).join(', ')
+                    }
+                } catch (e) {
+                    console.error('Reverse geocoding failed:', e)
+                }
+
+                setFormData(prev => ({ ...prev, location: address }))
+                setIsLocating(false)
+            },
+            (error) => {
+                console.error('Geolocation error:', error)
+                setIsLocating(false)
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        )
     }
 
     const captureImage = () => {
@@ -86,8 +177,18 @@ function ReportIssue() {
 
         const imageData = canvas.toDataURL('image/jpeg')
         setCapturedImage(imageData)
+        
+        // Stop camera immediately after capture
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop())
+            streamRef.current = null
+        }
+        if (videoRef.current) {
+            videoRef.current.srcObject = null
+            videoRef.current.load()
+        }
+        
         setStep('preview')
-        stopCamera()
     }
 
     const uploadToImageBB = async (imageData) => {
@@ -101,14 +202,14 @@ function ReportIssue() {
             if (result) {
                 setUploadedUrl(result.imageUrl)
 
-                // Auto-populate form with AI insights
-                setFormData({
+                // Auto-populate form with AI insights while preserving location
+                setFormData(prev => ({
+                    ...prev,
                     title: result.title || '',
                     category: result.category || '',
                     description: result.description || '',
-                    location: '', // Still needs user/GPS input
                     priority: result.priority || 'medium'
-                })
+                }))
 
                 setStep('form')
                 success('AI Analysis complete! Review and finalize your report.')
@@ -134,6 +235,13 @@ function ReportIssue() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        
+        // Ensure camera is stopped before submission
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop())
+            streamRef.current = null
+        }
+        
         if (!isAuthenticated) {
             warning('Please login to report an issue')
             navigate('/login')
@@ -167,7 +275,6 @@ function ReportIssue() {
         }}>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-
             {step === 'camera' && (
                 <div style={{ width: '100%', maxWidth: '800px', position: 'relative' }}>
                     <div style={{
@@ -183,7 +290,6 @@ function ReportIssue() {
                             autoPlay
                             playsInline
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-
                         />
                         <div style={{
                             position: 'absolute',
@@ -212,7 +318,6 @@ function ReportIssue() {
                                 onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.92)'}
                                 onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
-
                                 <div style={{
                                     width: '56px',
                                     height: '56px',
@@ -277,7 +382,6 @@ function ReportIssue() {
                                 style={{ minWidth: '180px' }}
                             >
                                 {isAnalyzing ? '🤖 Analyzing...' : isUploading ? 'Uploading...' : '✨ Analyze & Report'}
-
                             </button>
                         </div>
                     </div>
@@ -316,8 +420,40 @@ function ReportIssue() {
                         </div>
 
                         <div className="form-group">
-                            <label className="form-label">Location</label>
-                            <input type="text" name="location" className="form-input" placeholder="Where is this?" value={formData.location} onChange={handleInputChange} required />
+                            <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                Location
+                                {isLocating && <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 400 }}>🛰️ Detecting...</span>}
+                            </label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    className="form-input"
+                                    placeholder={isLocating ? "Fetching your GPS location..." : "Where is this?"}
+                                    value={formData.location}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={fetchLocation}
+                                    disabled={isLocating}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '10px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontSize: '1.1rem',
+                                        opacity: isLocating ? 0.5 : 1
+                                    }}
+                                    title="Refresh location"
+                                >
+                                    📍
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-lg w-full" style={{ marginTop: '1rem' }}>

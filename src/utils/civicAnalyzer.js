@@ -31,49 +31,52 @@ class CivicIssueAnalyzer {
       return null;
     }
 
-    const prompt = `Analyze this civic issue photo and return ONLY valid JSON:
+    const categories = ["Roads & Potholes", "Street Lights", "Water Supply", "Drainage", "Garbage", "Public Safety", "Noise Pollution", "Other"];
+
+    const prompt = `Analyze this civic issue photo and return ONLY valid JSON.
     
-Categories: ["Roads & Potholes", "Street Lights", "Water Supply", "Drainage", "Garbage", "Public Safety", "Noise Pollution", "Other"]
+IMPORTANT: The "category" field MUST be EXACTLY one of these values: ${JSON.stringify(categories)}.
+Do not use any other category names.
 
 Return exactly this JSON structure:
 {
-  "category": "matching category from list",
+  "category": "one of the allowed strings",
   "confidence": number,
-  "title": "short title",
-  "description": "1-sentence context",
+  "title": "short title summarizing the issue",
+  "description": "1-2 sentence detailed context about what is visible in the photo",
   "priority": "low/medium/high/urgent",
   "authority": {
-    "title": "Responsible Authority Name",
-    "department": "department name"
+    "title": "Responsible Authority Name (e.g., Muniacipal Corporation)",
+    "department": "department name (e.g., Public Works)"
   }
 }`;
 
-    // Note: We'll use the URL in the prompt for efficiency, 
-    // but Gemini can also take inline_data if provided.
-    const body = {
-      contents: [{
-        parts: [
-          { text: `${prompt}\n\nImage URL: ${imageUrl}` }
-        ]
-      }],
-      generationConfig: {
-        response_mime_type: 'application/json',
-        temperature: 0.1
-      }
-    };
+    // Construct contents with prompt and image
+    const parts = [{ text: prompt }];
 
-    // If base64 is available and we want to send the raw data too:
     if (base64Data) {
-      body.contents[0].parts.push({
+      parts.push({
         inline_data: {
           mime_type: 'image/jpeg',
           data: base64Data.includes(',') ? base64Data.split(',')[1] : base64Data
         }
       });
+    } else {
+      // Fallback if no base64, though less ideal for multimodal
+      parts.push({ text: `Image URL for reference: ${imageUrl}` });
     }
 
+    const body = {
+      contents: [{ parts }],
+      generationConfig: {
+        response_mime_type: 'application/json',
+        temperature: 0.2
+      }
+    };
+
+
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,35 +93,63 @@ Return exactly this JSON structure:
     const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!textResponse) throw new Error('Empty response from AI');
 
-    return JSON.parse(textResponse.trim());
+    try {
+      // Handle potential markdown backticks in response
+      const jsonMatch = textResponse.match(/\{[\s\S]*\}/);
+      const jsonString = jsonMatch ? jsonMatch[0] : textResponse;
+      const parsed = JSON.parse(jsonString.trim());
+
+      // Ensure category matches exactly
+      if (parsed.category && !categories.includes(parsed.category)) {
+        // Find closest match or default to 'Other'
+        const lowerCat = parsed.category.toLowerCase();
+        const fallback = categories.find(c => lowerCat.includes(c.toLowerCase())) || 'Other';
+        parsed.category = fallback;
+      }
+
+      return parsed;
+    } catch (e) {
+      console.error('JSON Parse Error:', e, 'Response:', textResponse);
+      throw new Error('Failed to parse AI analysis result');
+    }
   }
 
   /**
    * Complete pipeline - Image Data → Enhanced Issue Object
+   * Optimized for Gemini Free Tier (Single Call)
    */
   static async processCivicImage(imageData) {
     try {
-      console.log('📸 Uploading to ImageBB...');
-      const imageUrl = await this.uploadToImgBB(imageData);
-      console.log('Image URL:', imageUrl);
+      console.log('📸 [CivicAnalyzer] Starting analysis pipeline...');
 
-      console.log(' Analyzing with Gemini...');
+      // 1. Upload to ImageBB first (required for the persistent image URL)
+      const imageUrl = await this.uploadToImgBB(imageData);
+      console.log('☁️ [CivicAnalyzer] Image hosted at:', imageUrl);
+
+      // 2. Perform AI analysis (The single Gemini call)
+      console.log('🤖 [CivicAnalyzer] Invoking Gemini 2.5 Flash (One-shot)...');
       const analysis = await this.analyzeWithGemini(imageUrl, imageData);
 
-      const civicIssue = {
+      if (!analysis) {
+        throw new Error('AI returned no usable data');
+      }
+
+      console.log('✅ [CivicAnalyzer] AI analysis successfully parsed.');
+
+      const result = {
         imageUrl,
         ...analysis,
         timestamp: new Date().toISOString(),
         status: 'analyzed'
       };
 
-      console.log('✅ AI Analysis Result:');
-      console.table(civicIssue);
-
-      return civicIssue;
+      // Table log for easy debugging in dev tools
+      console.table(result);
+      return result;
 
     } catch (error) {
-      console.error(' AI Analysis failed:', error);
+      console.error('❌ [CivicAnalyzer] Pipeline failed:', error.message);
+      // Ensure we log the actual error for the user to see in console
       return null;
     }
   }
