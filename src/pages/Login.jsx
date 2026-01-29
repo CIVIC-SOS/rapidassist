@@ -258,9 +258,9 @@ function Login() {
                             />
                         </div>
 
-                        <div className="demo-credentials" style={{ textAlign: 'left', fontSize: '0.8rem' }}>
+                        <div className="demo-credentials" style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '1rem' }}>
                             <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>💡 Demo Credentials:</div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'center' }}>
                                 <span>👮 Police: police / police123</span>
                                 <span>🚑 Ambulance: ambulance / ambulance123</span>
                                 <span>🚒 Fire: fire / fire123</span>
@@ -306,7 +306,7 @@ function Login() {
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Aadhar</div>
                             </div>
-                             </button>
+                        </button>
 
                         <button
                             className="auth-method-btn mobile"

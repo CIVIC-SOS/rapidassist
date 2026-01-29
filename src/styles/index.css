@@ -847,6 +847,7 @@ body::before {
 .auth-method-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-4);
   width: 100%;
   padding: var(--space-4);
@@ -928,6 +929,12 @@ body::before {
 .resend-link:disabled {
   color: var(--text-muted);
   cursor: not-allowed;
+}
+
+.auth-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
 }
 
 /* ===================================
