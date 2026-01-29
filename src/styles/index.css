@@ -175,7 +175,7 @@ body::before {
    HEADER STYLES
    =================================== */
 .header {
-  background: var(--bg-glass);
+  background: var();
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -237,10 +237,7 @@ body::before {
   position: relative;
 }
 
-.header-nav-link:hover {
-  color: var(--text-primary);
-  background: var(--bg-glass);
-}
+
 
 .header-nav-link.active {
   color: var(--primary-400);
@@ -297,9 +294,7 @@ body::before {
   transition: left var(--transition-slow);
 }
 
-.btn:hover::before {
-  left: 100%;
-}
+
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
@@ -307,10 +302,7 @@ body::before {
   box-shadow: var(--shadow-md), 0 0 20px rgba(16, 185, 129, 0.2);
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
-}
+
 
 .btn-secondary {
   background: var(--bg-glass);
@@ -319,10 +311,7 @@ body::before {
   backdrop-filter: blur(10px);
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--primary-500);
-}
+
 
 .btn-danger {
   background: var(--ambulance-gradient);
@@ -330,10 +319,7 @@ body::before {
   box-shadow: var(--shadow-md), 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
-.btn-danger:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(239, 68, 68, 0.5);
-}
+
 
 .btn-lg {
   padding: var(--space-4) var(--space-8);
@@ -360,11 +346,7 @@ body::before {
   transition: all var(--transition-base);
 }
 
-.card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
-}
+
 
 .card-glass {
   background: var(--bg-glass);
@@ -385,8 +367,7 @@ body::before {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-2xl);
-  padding: var(--space-6);
-  transition: all var(--transition-base);
+  padding: var(--space-3);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -403,8 +384,10 @@ body::before {
   transition: opacity var(--transition-base);
 }
 
-.emergency-card:hover::before {
-  opacity: 1;
+
+
+.emergency-card.police::before {
+  background: var(--police-gradient);
 }
 
 .emergency-card.police::before {
@@ -424,36 +407,32 @@ body::before {
   box-shadow: var(--shadow-xl);
 }
 
-.emergency-card.police:hover {
-  border-color: var(--police-color);
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(59, 130, 246, 0.2);
+.emergency-card.fire::before {
+  background: var(--fire-gradient);
 }
 
-.emergency-card.ambulance:hover {
-  border-color: var(--ambulance-color);
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(239, 68, 68, 0.2);
-}
 
-.emergency-card.fire:hover {
-  border-color: var(--fire-color);
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(249, 115, 22, 0.2);
-}
+
+
 
 .emergency-card-header {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  text-align: center;
 }
 
 .emergency-card-icon {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
 }
 
 .emergency-card.police .emergency-card-icon {
@@ -482,14 +461,16 @@ body::before {
   color: var(--text-muted);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-1);
 }
 
 .emergency-card-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: var(--space-4);
+  margin-top: var(--space-2);
 }
 
 .emergency-action-btn {
@@ -508,11 +489,7 @@ body::before {
   transition: all var(--transition-base);
 }
 
-.emergency-action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
-  transform: translateY(-2px);
-}
+
 
 .emergency-action-btn .icon {
   font-size: var(--font-size-lg);
@@ -625,8 +602,8 @@ body::before {
    =================================== */
 .hero-section {
   text-align: center;
-  padding: var(--space-16) 0;
-  margin-bottom: var(--space-8);
+  padding: var(--space-8) 0;
+  margin-bottom: var(--space-4);
 }
 
 .hero-badge {
@@ -784,9 +761,7 @@ body::before {
   }
 }
 
-.sos-button:hover {
-  transform: scale(1.05);
-}
+
 
 .sos-button:active {
   transform: scale(0.95);

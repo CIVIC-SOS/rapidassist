@@ -284,9 +284,6 @@ function Login() {
                             <div className="auth-method-icon">🪪</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Aadhar</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    Use your Aadhar card for verification
-                                </div>
                             </div>
                             <span className="method-arrow">→</span>
                         </button>
@@ -298,9 +295,6 @@ function Login() {
                             <div className="auth-method-icon">📱</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Mobile</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    OTP will be sent to your number
-                                </div>
                             </div>
                             <span className="method-arrow">→</span>
                         </button>
@@ -312,9 +306,6 @@ function Login() {
                             <div className="auth-method-icon">🔐</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Admin Login</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    For authorized personnel only
-                                </div>
                             </div>
                             <span className="method-arrow">→</span>
                         </button>

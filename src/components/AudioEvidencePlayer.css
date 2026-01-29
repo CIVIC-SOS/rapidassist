@@ -1,0 +1,105 @@
+.instagram-audio-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  padding: 10px 16px;
+  border-radius: 100px;
+  width: 100%;
+  max-width: 320px;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.instagram-audio-player:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.play-pause-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--error);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.play-pause-btn:hover {
+  transform: scale(1.05);
+  background: #dc2626;
+}
+
+.play-pause-btn:active {
+  transform: scale(0.95);
+}
+
+.waveform-container {
+  flex-grow: 1;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.progress-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--error);
+  border-radius: 2px;
+  position: relative;
+}
+
+.progress-handle {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--error);
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.duration-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--error);
+  min-width: 35px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Audio visualizer peaks simulate a waveform */
+.waveform-peaks {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  width: 100%;
+  opacity: 0.4;
+}
+
+.peak {
+  flex: 1;
+  background: var(--error);
+  border-radius: 1px;
+  transition: height 0.2s ease;
+}

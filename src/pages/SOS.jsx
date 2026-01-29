@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useReports } from '../context/ReportsContext'
 import { useToast } from '../context/ToastContext'
 import LocationMap from '../components/LocationMap/LocationMap'
 import { EMERGENCY_SERVICES } from '../utils/constants'
+import { sendSOS } from '../utils/sendingSOS'
+import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
 
 function SOS() {
     const { user, isAuthenticated } = useAuth()
@@ -11,7 +13,7 @@ function SOS() {
     const toast = useToast()
 
     const [isActivated, setIsActivated] = useState(false)
-    const [countdown, setCountdown] = useState(5)
+    const [countdown, setCountdown] = useState(7)
     const [selectedTarget, setSelectedTarget] = useState('myself')
     const [selectedService, setSelectedService] = useState('all')
     const [location, setLocation] = useState(null)
@@ -19,6 +21,9 @@ function SOS() {
     const [locationError, setLocationError] = useState(null)
     const [shakeEnabled, setShakeEnabled] = useState(false)
     const [sosComplete, setSosComplete] = useState(false)
+    const [evidenceStatus, setEvidenceStatus] = useState('idle') // idle, capturing, uploaded, failed
+    const [evidenceUrls, setEvidenceUrls] = useState(null)
+    const abortControllerRef = useRef(null)
 
     // Get user's location on mount
     useEffect(() => {
@@ -31,10 +36,9 @@ function SOS() {
         if (isActivated && countdown > 0) {
             timer = setInterval(() => {
                 setCountdown(prev => prev - 1)
-                // Play beep sound (using Web Audio API)
                 playBeep(countdown)
             }, 1000)
-        } else if (countdown === 0) {
+        } else if (countdown === 0 && isActivated) {
             handleSOSComplete()
         }
         return () => clearInterval(timer)
@@ -85,7 +89,6 @@ function SOS() {
         if (!navigator.geolocation) {
             setLocationError('Geolocation not supported')
             setIsLocating(false)
-            // Use default location for demo
             setLocation({ lat: 28.6139, lng: 77.2090, address: 'New Delhi, India' })
             return
         }
@@ -93,8 +96,6 @@ function SOS() {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { latitude, longitude, accuracy } = position.coords
-
-                // Try to get address via reverse geocoding
                 let address = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
                 try {
                     const response = await fetch(
@@ -116,7 +117,6 @@ function SOS() {
                 console.error('Geolocation error:', error)
                 setLocationError(error.message)
                 setIsLocating(false)
-                // Use default location for demo
                 setLocation({ lat: 28.6139, lng: 77.2090, address: 'New Delhi, India (Demo Location)' })
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -128,26 +128,38 @@ function SOS() {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)()
             const oscillator = audioContext.createOscillator()
             const gainNode = audioContext.createGain()
-
             oscillator.connect(gainNode)
             gainNode.connect(audioContext.destination)
-
             oscillator.type = 'sine'
             oscillator.frequency.value = count === 1 ? 880 : 440
             gainNode.gain.value = 0.3
-
             oscillator.start()
             oscillator.stop(audioContext.currentTime + 0.15)
-        } catch (e) {
-            // Audio might be blocked, that's okay
-        }
+        } catch (e) { }
     }
 
     const handleActivate = () => {
         setIsActivated(true)
-        setCountdown(5)
+        setCountdown(7)
         setSosComplete(false)
-        // Vibrate if available
+        setEvidenceStatus('capturing')
+
+        // Start multimedia capture immediately
+        const controller = new AbortController()
+        abortControllerRef.current = controller
+
+        sendSOS(controller.signal).then(result => {
+            setEvidenceUrls(result)
+            setEvidenceStatus('uploaded')
+            // Result is already logged in sendSOS, but we can do it here too as requested
+            console.log('Final Evidence Object:', result)
+        }).catch(err => {
+            if (err.message !== 'Aborted') {
+                setEvidenceStatus('failed')
+                console.error('Evidence capture failed:', err)
+            }
+        })
+
         if (navigator.vibrate) {
             navigator.vibrate([200, 100, 200])
         }
@@ -155,7 +167,14 @@ function SOS() {
 
     const handleCancel = () => {
         setIsActivated(false)
-        setCountdown(5)
+        setCountdown(7)
+        setEvidenceStatus('idle')
+
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort()
+            abortControllerRef.current = null
+        }
+
         toast.info('SOS Alert cancelled')
     }
 
@@ -163,7 +182,6 @@ function SOS() {
         setIsActivated(false)
         setSosComplete(true)
 
-        // Create SOS report
         const reportData = {
             type: selectedService === 'all' ? 'ambulance' : selectedService,
             target: selectedTarget,
@@ -176,7 +194,8 @@ function SOS() {
                     .filter(([_, v]) => v)
                     .map(([k]) => k),
                 allergies: user.allergies
-            } : null
+            } : null,
+            evidence: evidenceUrls // Note: this might still be uploading
         }
 
         try {
@@ -190,10 +209,9 @@ function SOS() {
                 }, 1500)
             }
         } catch (e) {
-            toast.error('Failed to send alert. Please try calling emergency services directly.')
+            toast.error('Failed to send alert. Please call emergency services directly.')
         }
 
-        // Vibrate success pattern
         if (navigator.vibrate) {
             navigator.vibrate([100, 50, 100, 50, 100])
         }
@@ -206,7 +224,7 @@ function SOS() {
                 const permission = await DeviceMotionEvent.requestPermission()
                 if (permission === 'granted') {
                     setShakeEnabled(true)
-                    toast.success('Shake detection enabled! Shake device to trigger SOS.')
+                    toast.success('Shake detection enabled!')
                 }
             } catch (e) {
                 toast.error('Could not enable shake detection')
@@ -232,17 +250,14 @@ function SOS() {
                 <div className="sos-container">
                     {!isActivated ? (
                         <>
-                            {/* Main SOS Button */}
                             <button className="sos-button" onClick={handleActivate}>
                                 <span>SOS</span>
                             </button>
 
-                            {/* Target Selection */}
                             <div className="sos-info">
                                 <p style={{ color: 'var(--text-secondary)', marginTop: '2rem', marginBottom: '1rem' }}>
                                     Who needs help?
                                 </p>
-
                                 <div className="sos-options">
                                     <div
                                         className={`sos-option-card ${selectedTarget === 'myself' ? 'selected' : ''}`}
@@ -250,9 +265,7 @@ function SOS() {
                                     >
                                         <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👤</div>
                                         <div style={{ fontWeight: 600 }}>For Myself</div>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                            I need help
-                                        </div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>I need help</div>
                                     </div>
 
                                     <div
@@ -261,13 +274,10 @@ function SOS() {
                                     >
                                         <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👥</div>
                                         <div style={{ fontWeight: 600 }}>For Others</div>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                            Report emergency
-                                        </div>
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Report emergency</div>
                                     </div>
                                 </div>
 
-                                {/* Service Selection */}
                                 <p style={{ color: 'var(--text-muted)', marginTop: '1.5rem', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
                                     Emergency service needed:
                                 </p>
@@ -290,19 +300,13 @@ function SOS() {
                                 </div>
                             </div>
 
-                            {/* Location Display */}
                             <div className="sos-location-section">
                                 <div className="location-header">
                                     <h3>📍 Your Location</h3>
-                                    <button
-                                        className="btn btn-secondary"
-                                        onClick={requestLocation}
-                                        disabled={isLocating}
-                                    >
+                                    <button className="btn btn-secondary" onClick={requestLocation} disabled={isLocating}>
                                         {isLocating ? '⏳ Locating...' : '🔄 Refresh'}
                                     </button>
                                 </div>
-
                                 {location ? (
                                     <>
                                         <LocationMap location={location} height="200px" />
@@ -313,15 +317,13 @@ function SOS() {
                                         <div className="loading-spinner"></div>
                                         <p>Acquiring your location...</p>
                                     </div>
-                                ) : locationError ? (
+                                ) : (
                                     <div className="location-error">
-                                        <p>⚠️ {locationError}</p>
-                                        <p>Using approximate location for demo</p>
+                                        <p>⚠️ {locationError || 'Location not acquired'}</p>
                                     </div>
-                                ) : null}
+                                )}
                             </div>
 
-                            {/* Shake Detection Toggle */}
                             <div className="shake-toggle">
                                 {!shakeEnabled ? (
                                     <button className="btn btn-secondary" onClick={enableShakeDetection}>
@@ -336,79 +338,71 @@ function SOS() {
                             </div>
                         </>
                     ) : (
-                        /* Countdown State */
                         <div className="sos-countdown-container">
                             <div className="countdown-ring">
                                 <svg viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(239, 68, 68, 0.2)" strokeWidth="8" />
                                     <circle
-                                        cx="50"
-                                        cy="50"
-                                        r="45"
-                                        fill="none"
-                                        stroke="rgba(239, 68, 68, 0.2)"
-                                        strokeWidth="8"
-                                    />
-                                    <circle
-                                        cx="50"
-                                        cy="50"
-                                        r="45"
-                                        fill="none"
-                                        stroke="#ef4444"
-                                        strokeWidth="8"
-                                        strokeLinecap="round"
-                                        strokeDasharray={`${(countdown / 5) * 283} 283`}
+                                        cx="50" cy="50" r="45" fill="none" stroke="#ef4444" strokeWidth="8" strokeLinecap="round"
+                                        strokeDasharray={`${(countdown / 7) * 283} 283`}
                                         transform="rotate(-90 50 50)"
                                         className="countdown-progress"
                                     />
                                 </svg>
                                 <div className="countdown-number">{countdown}</div>
                             </div>
+                            <h2 style={{ color: 'var(--text-primary)', marginTop: '1.5rem' }}>SOS Alert Activating...</h2>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Emergency services will be notified in {countdown}s</p>
 
-                            <h2 style={{ color: 'var(--text-primary)', marginTop: '1.5rem' }}>
-                                SOS Alert Activating...
-                            </h2>
-                            <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
-                                Emergency services will be notified when countdown reaches zero
-                            </p>
+                            <button className="btn btn-secondary btn-lg" onClick={handleCancel}>✕ Cancel Alert</button>
 
-                            <button className="btn btn-secondary btn-lg" onClick={handleCancel}>
-                                ✕ Cancel Alert
-                            </button>
-
-                            <div className="alert-recipients">
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                                    Alert will be sent to:
-                                </p>
-                                <div className="recipient-badges">
-                                    {(selectedService === 'all' ? Object.values(EMERGENCY_SERVICES) : [EMERGENCY_SERVICES[selectedService]]).map(s => (
-                                        <span
-                                            key={s.id}
-                                            className="recipient-badge"
-                                            style={{ background: s.gradient }}
-                                        >
-                                            {s.icon} {s.title}
-                                        </span>
-                                    ))}
-                                </div>
+                            <div className="evidence-immediate-status" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', border: '1px solid var(--error)' }}>
+                                <div className="loading-spinner" style={{ margin: '0 auto 0.5rem', width: '20px', height: '20px' }}></div>
+                                <p style={{ color: 'var(--error)', fontWeight: 600, fontSize: '0.9rem' }}>🎥 Recording Evidence...</p>
+                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Capturing audio and images immediately</p>
                             </div>
                         </div>
                     )}
                 </div>
             ) : (
-                /* SOS Complete State */
                 <div className="sos-complete">
-                    <div className="success-animation">
-                        <div className="success-circle">
-                            <span>✓</span>
-                        </div>
-                    </div>
+                    <div className="success-animation"><div className="success-circle"><span>✓</span></div></div>
+                    <h2 style={{ color: 'var(--success)', marginBottom: '0.5rem' }}>Emergency Alert Sent!</h2>
+                    <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '400px' }}>Help is on the way. Stay calm and stay in your location.</p>
 
-                    <h2 style={{ color: 'var(--success)', marginBottom: '0.5rem' }}>
-                        Emergency Alert Sent!
-                    </h2>
-                    <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '400px' }}>
-                        Help is on the way. Stay calm and stay in your location if it's safe to do so.
-                    </p>
+                    {evidenceStatus === 'capturing' && (
+                        <div className="evidence-loader" style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', border: '1px solid var(--error)' }}>
+                            <div className="loading-spinner" style={{ margin: '0 auto 0.5rem' }}></div>
+                            <p style={{ color: 'var(--error)', fontWeight: 600 }}>📸 Capturing Evidence...</p>
+                        </div>
+                    )}
+
+                    {evidenceStatus === 'uploaded' && evidenceUrls && (
+                        <div className="evidence-success" style={{ marginBottom: '2rem', padding: '1.25rem', background: 'rgba(34, 197, 94, 0.05)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                                <span style={{ fontSize: '1.2rem' }}>✅</span>
+                                <strong style={{ color: 'var(--success)' }}>Multimedia Evidence Secured</strong>
+                            </div>
+
+                            {evidenceUrls.audioUrl && (
+                                <div style={{ marginBottom: '1.25rem' }}>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Recorded Audio (7s):</p>
+                                    <AudioEvidencePlayer src={evidenceUrls.audioUrl} />
+                                </div>
+                            )}
+
+                            <div>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Captured Images:</p>
+                                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+                                    {evidenceUrls.imageUrls.map((url, i) => (
+                                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ flexShrink: 0 }}>
+                                            <img src={url} alt="Evidence" style={{ height: '60px', width: '60px', borderRadius: '8px', objectFit: 'cover', border: '1px solid rgba(0,0,0,0.1)' }} />
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="eta-cards">
                         {(selectedService === 'all' ? Object.values(EMERGENCY_SERVICES) : [EMERGENCY_SERVICES[selectedService]]).map(s => (
@@ -422,63 +416,9 @@ function SOS() {
                         ))}
                     </div>
 
-                    {user?.contacts?.length > 0 && (
-                        <div className="contacts-notified">
-                            <h4>📱 Contacts Notified:</h4>
-                            <div className="contact-list">
-                                {user.contacts.map((c, i) => (
-                                    <div key={i} className="contact-item">
-                                        <span className="contact-initial">{c.name?.charAt(0)}</span>
-                                        <span>{c.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    <button
-                        className="btn btn-primary btn-lg"
-                        onClick={() => setSosComplete(false)}
-                        style={{ marginTop: '2rem' }}
-                    >
-                        Send Another Alert
-                    </button>
+                    <button className="btn btn-primary btn-lg" onClick={() => setSosComplete(false)} style={{ marginTop: '2rem' }}>🆘 Send Another Alert</button>
                 </div>
             )}
-
-            {/* How SOS Works Section */}
-            <section className="sos-how-it-works">
-                <div className="card">
-                    <h3 style={{
-                        color: 'var(--text-primary)',
-                        marginBottom: '1rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                    }}>
-                        <span>ℹ️</span> How SOS Works
-                    </h3>
-
-                    <div className="steps-grid">
-                        {[
-                            { num: 1, title: 'Countdown Starts', desc: '5-second countdown gives you time to cancel if pressed accidentally' },
-                            { num: 2, title: 'Location Shared', desc: 'Your GPS location is immediately shared with emergency services' },
-                            { num: 3, title: 'Services Notified', desc: 'Police, Ambulance, or Fire services are alerted based on your selection' },
-                            { num: 4, title: 'Contacts Alerted', desc: 'Your emergency contacts receive notification with your location' }
-                        ].map(step => (
-                            <div key={step.num} className="step-item">
-                                <span className="step-number">{step.num}</span>
-                                <div>
-                                    <strong style={{ color: 'var(--text-primary)' }}>{step.title}</strong>
-                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                                        {step.desc}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
         </div>
     )
 }

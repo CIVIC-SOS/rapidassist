@@ -210,7 +210,6 @@
     transition: all 0.2s;
 }
 
-.filter-btn:hover,
 .filter-btn.active {
     background: rgba(16, 185, 129, 0.15);
     border-color: #10b981;
@@ -247,7 +246,6 @@
     transition: all 0.2s;
 }
 
-.admin-report-card:hover,
 .admin-report-card.selected {
     border-color: #10b981;
     background: rgba(16, 185, 129, 0.1);
@@ -351,9 +349,7 @@
     color: #10b981;
 }
 
-.action-btn:hover {
-    transform: scale(1.02);
-}
+/* .action-btn:hover removed */
 
 .report-detail-panel {
     background: rgba(30, 30, 40, 0.8);
@@ -537,9 +533,7 @@
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.btn-danger:hover {
-    background: rgba(239, 68, 68, 0.3);
-}
+/* .btn-danger:hover removed */
 
 .profile-grid {
     display: grid;
@@ -786,7 +780,6 @@
     transition: all 0.2s;
 }
 
-.service-btn:hover,
 .service-btn.active {
     border-color: #10b981;
     color: #10b981;

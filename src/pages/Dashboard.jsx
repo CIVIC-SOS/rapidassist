@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useReports } from '../context/ReportsContext'
 import { STATUS_CONFIG } from '../utils/constants'
+import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
 
 function Dashboard() {
     const navigate = useNavigate()
@@ -164,6 +165,36 @@ function Dashboard() {
                                             <span>📍 {report.location?.address || 'Location shared'}</span>
                                             <span>🕐 {formatDate(report.timestamp)}</span>
                                         </div>
+
+                                        {report.evidence && (
+                                            <div className="report-evidence-preview" style={{
+                                                marginTop: '0.75rem',
+                                                padding: '0.75rem',
+                                                background: 'rgba(239, 68, 68, 0.05)',
+                                                borderRadius: '12px',
+                                                border: '1px solid rgba(239, 68, 68, 0.1)'
+                                            }}>
+                                                <div style={{ display: 'flex', gap: '6px', marginBottom: '0.75rem' }}>
+                                                    {report.evidence.imageUrls?.slice(0, 4).map((url, i) => (
+                                                        <img key={i} src={url} alt="Evidence" style={{ width: '35px', height: '35px', borderRadius: '4px', objectFit: 'cover' }} />
+                                                    ))}
+                                                    {report.evidence.imageUrls?.length > 4 && (
+                                                        <div style={{ width: '35px', height: '35px', background: 'var(--border)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem' }}>
+                                                            +{report.evidence.imageUrls.length - 4}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {report.evidence.audioUrl && (
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                                        <span style={{ fontSize: '0.7rem', color: 'var(--error)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                                            Voice Evidence:
+                                                        </span>
+                                                        <AudioEvidencePlayer src={report.evidence.audioUrl} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Status Tracker */}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useReports } from '../context/ReportsContext'
 import { useToast } from '../context/ToastContext'
+import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
 import { useAuth } from '../context/AuthContext'
 import { EMERGENCY_SERVICES, STATUS_CONFIG } from '../utils/constants'
 
@@ -280,6 +281,51 @@ function AdminDashboard() {
                                     <p style={{ color: 'var(--text-secondary)' }}>
                                         {selectedReport.description}
                                     </p>
+                                </div>
+                            )}
+
+                            {selectedReport.evidence && (
+                                <div className="detail-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
+                                    <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                                        📂 Multimedia Evidence
+                                    </h4>
+
+                                    {selectedReport.evidence.audioUrl && (
+                                        <div style={{ marginBottom: '1.5rem' }}>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Voice Recording:</p>
+                                            <AudioEvidencePlayer src={selectedReport.evidence.audioUrl} />
+                                        </div>
+                                    )}
+
+                                    {selectedReport.evidence.imageUrls?.length > 0 && (
+                                        <div>
+                                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Images ({selectedReport.evidence.imageUrls.length}):</p>
+                                            <div className="evidence-grid" style={{
+                                                display: 'grid',
+                                                gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+                                                gap: '8px'
+                                            }}>
+                                                {selectedReport.evidence.imageUrls.map((url, i) => (
+                                                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                                                        <img
+                                                            src={url}
+                                                            alt={`Evidence ${i + 1}`}
+                                                            style={{
+                                                                width: '100%',
+                                                                aspectRatio: '1',
+                                                                borderRadius: '8px',
+                                                                objectFit: 'cover',
+                                                                border: '1px solid var(--border)',
+                                                                transition: 'transform 0.2s ease'
+                                                            }}
+                                                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                                                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                                        />
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
