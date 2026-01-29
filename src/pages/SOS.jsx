@@ -6,6 +6,8 @@ import LocationMap from '../components/LocationMap/LocationMap'
 import { EMERGENCY_SERVICES } from '../utils/constants'
 import { sendSOS } from '../utils/sendingSOS'
 import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
+import { database } from '../firebase'
+import { ref, push, set, serverTimestamp } from 'firebase/database'
 
 function SOS() {
     const { user, isAuthenticated } = useAuth()
@@ -23,6 +25,7 @@ function SOS() {
     const [sosComplete, setSosComplete] = useState(false)
     const [evidenceStatus, setEvidenceStatus] = useState('idle') // idle, capturing, uploaded, failed
     const [evidenceUrls, setEvidenceUrls] = useState(null)
+    const firebaseIdRef = useRef(null)
     const abortControllerRef = useRef(null)
 
     // Get user's location on mount
@@ -151,8 +154,13 @@ function SOS() {
         sendSOS(controller.signal).then(result => {
             setEvidenceUrls(result)
             setEvidenceStatus('uploaded')
-            // Result is already logged in sendSOS, but we can do it here too as requested
             console.log('Final Evidence Object:', result)
+
+            // Update Firebase if it's already pushed
+            if (firebaseIdRef.current) {
+                const emergencyRef = ref(database, `emergencies/${firebaseIdRef.current}/evidence`)
+                set(emergencyRef, result)
+            }
         }).catch(err => {
             if (err.message !== 'Aborted') {
                 setEvidenceStatus('failed')
@@ -189,17 +197,28 @@ function SOS() {
             userName: user?.name || 'Anonymous User',
             location: location,
             medicalInfo: user ? {
-                bloodGroup: user.bloodGroup,
+                bloodGroup: user.bloodGroup || 'Not Specified',
                 conditions: Object.entries(user.medicalConditions || {})
                     .filter(([_, v]) => v)
                     .map(([k]) => k),
-                allergies: user.allergies
+                allergies: user.allergies || 'None reported'
             } : null,
             evidence: evidenceUrls // Note: this might still be uploading
         }
 
         try {
             await createSOSReport(reportData)
+
+            // Push to Firebase RTDB for Realtime Tracking
+            const emergencyListRef = ref(database, 'emergencies')
+            const newEmergencyRef = push(emergencyListRef)
+            set(newEmergencyRef, {
+                ...reportData,
+                timestamp: serverTimestamp(),
+                status: 'active'
+            })
+            firebaseIdRef.current = newEmergencyRef.key
+
             toast.success('🆘 Emergency alert sent! Help is on the way.')
             if (user?.contacts?.length > 0) {
                 setTimeout(() => {
@@ -207,6 +226,7 @@ function SOS() {
                 }, 1500)
             }
         } catch (e) {
+            console.error('SOS Send Error:', e)
             toast.error('Failed to send alert. Please call emergency services directly.')
         }
 
