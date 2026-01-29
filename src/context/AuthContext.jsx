@@ -68,13 +68,31 @@ export function AuthProvider({ children }) {
     const loginAsAdmin = async (adminId, password) => {
         await new Promise(resolve => setTimeout(resolve, 1000))
 
-        // Demo: Accept admin/admin123
+        // Police Admin login
+        if ((adminId.toLowerCase() === 'police' || adminId === 'POLICE001') && password === 'police123') {
+            setUser(DEMO_USERS.policeAdmin)
+            return { success: true, user: DEMO_USERS.policeAdmin }
+        }
+
+        // Ambulance Admin login
+        if ((adminId.toLowerCase() === 'ambulance' || adminId === 'AMBULANCE001') && password === 'ambulance123') {
+            setUser(DEMO_USERS.ambulanceAdmin)
+            return { success: true, user: DEMO_USERS.ambulanceAdmin }
+        }
+
+        // Fire Admin login
+        if ((adminId.toLowerCase() === 'fire' || adminId === 'FIRE001') && password === 'fire123') {
+            setUser(DEMO_USERS.fireAdmin)
+            return { success: true, user: DEMO_USERS.fireAdmin }
+        }
+
+        // General Admin login (for backward compatibility)
         if ((adminId === 'admin' || adminId === 'ADMIN001') && password === 'admin123') {
             setUser(DEMO_USERS.admin)
             return { success: true, user: DEMO_USERS.admin }
         }
 
-        return { success: false, error: 'Invalid credentials. Use: admin / admin123' }
+        return { success: false, error: 'Invalid credentials. Try: police/police123, ambulance/ambulance123, or fire/fire123' }
     }
 
     // Register new user
