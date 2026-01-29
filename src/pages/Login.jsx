@@ -258,10 +258,6 @@ function Login() {
                             />
                         </div>
 
-<<<<<<< HEAD
-                        <div className="demo-credentials">
-                            <span>Demo:</span> admin / admin123
-=======
                         <div className="demo-credentials" style={{ textAlign: 'left', fontSize: '0.8rem' }}>
                             <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>💡 Demo Credentials:</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -269,7 +265,6 @@ function Login() {
                                 <span>🚑 Ambulance: ambulance / ambulance123</span>
                                 <span>🚒 Fire: fire / fire123</span>
                             </div>
->>>>>>> 8b7f8413b67e5817a7d3133c6e01d5caaa60a520
                         </div>
 
                         <button
