@@ -21,7 +21,7 @@ function Header() {
         <header className="header">
             <div className="header-container">
                 <Link to="/" className="logo" onClick={closeMobileMenu}>
-                    <span className="logo-icon">🆘</span>
+                    {/* <span className="logo-icon">🆘</span> */}
                     <span className="logo-text">Rapid<span>Assist</span></span>
                 </Link>
 
@@ -31,7 +31,7 @@ function Header() {
                         className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                         onClick={closeMobileMenu}
                     >
-                        🏠 Home
+                        Home
                     </NavLink>
 
                     <NavLink
@@ -39,7 +39,7 @@ function Header() {
                         className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                         onClick={closeMobileMenu}
                     >
-                        👥 Community
+                        Community
                     </NavLink>
 
                     {isAuthenticated && (
@@ -49,7 +49,7 @@ function Header() {
                                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                                 onClick={closeMobileMenu}
                             >
-                                📝 Report
+                                Report
                             </NavLink>
 
                             {isAdmin ? (
@@ -58,7 +58,7 @@ function Header() {
                                     className={({ isActive }) => `nav-link admin-link ${isActive ? 'active' : ''}`}
                                     onClick={closeMobileMenu}
                                 >
-                                    🛡️ Admin
+                                    Admin
                                 </NavLink>
                             ) : (
                                 <NavLink
@@ -66,7 +66,7 @@ function Header() {
                                     className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                                     onClick={closeMobileMenu}
                                 >
-                                    📊 Dashboard
+                                    Dashboard
                                 </NavLink>
                             )}
                         </>
@@ -80,7 +80,7 @@ function Header() {
                                 className="user-menu-trigger"
                                 onClick={() => setShowUserMenu(!showUserMenu)}
                             >
-                                <span className="user-avatar">{user?.name?.charAt(0) || '👤'}</span>
+                                <span className="user-avatar">{/* 👤 */}</span>
                                 <span className="user-name">{user?.name?.split(' ')[0]}</span>
                                 <span className="dropdown-arrow">▼</span>
                             </button>
@@ -90,11 +90,11 @@ function Header() {
                                     <div className="menu-backdrop" onClick={() => setShowUserMenu(false)} />
                                     <div className="user-dropdown">
                                         <div className="dropdown-header">
-                                            <span className="dropdown-avatar">{user?.name?.charAt(0)}</span>
+                                            <span className="dropdown-avatar">{/* {user?.name?.charAt(0)} */}</span>
                                             <div>
                                                 <div className="dropdown-name">{user?.name}</div>
                                                 <div className="dropdown-type">
-                                                    {isAdmin ? '🛡️ Administrator' : '👤 Citizen'}
+                                                    {isAdmin ? 'Administrator' : 'Citizen'}
                                                 </div>
                                             </div>
                                         </div>
@@ -107,7 +107,7 @@ function Header() {
                                                 className="dropdown-item"
                                                 onClick={() => setShowUserMenu(false)}
                                             >
-                                                ⚙️ Profile Settings
+                                                Profile Settings
                                             </Link>
                                         )}
 
@@ -116,13 +116,13 @@ function Header() {
                                             className="dropdown-item"
                                             onClick={() => setShowUserMenu(false)}
                                         >
-                                            📊 {isAdmin ? 'Admin Dashboard' : 'My Dashboard'}
+                                            {isAdmin ? 'Admin Dashboard' : 'My Dashboard'}
                                         </Link>
 
                                         <div className="dropdown-divider" />
 
                                         <button className="dropdown-item logout" onClick={handleLogout}>
-                                            🚪 Logout
+                                            Logout
                                         </button>
                                     </div>
                                 </>
@@ -140,7 +140,7 @@ function Header() {
                         onClick={toggleMobileMenu}
                         aria-label="Toggle menu"
                     >
-                        {showMobileMenu ? '✕' : '☰'}
+                        {showMobileMenu ? 'Close' : 'Menu'}
                     </button>
                 </div>
             </div>

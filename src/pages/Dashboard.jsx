@@ -14,7 +14,7 @@ function Dashboard() {
     if (!isAuthenticated) {
         return (
             <div className="dashboard-login-prompt">
-                <div className="prompt-icon">🔐</div>
+                <div className="prompt-icon">{/* 🔐 */}</div>
                 <h2>Access Your Dashboard</h2>
                 <p>Login to view your SOS history, reports, and manage your profile</p>
                 <Link to="/login" className="btn btn-primary">Login to Continue</Link>
@@ -39,7 +39,7 @@ function Dashboard() {
         <div className="dashboard-page">
             <div className="page-header">
                 <div className="welcome-section">
-                    <div className="welcome-avatar">{user?.name?.charAt(0) || '👤'}</div>
+                    <div className="welcome-avatar">{/* {user?.name?.charAt(0) || '👤'} */}</div>
                     <div>
                         <h1 className="page-title">Welcome back, {user?.name?.split(' ')[0]}!</h1>
                         <p className="page-subtitle">
@@ -49,14 +49,14 @@ function Dashboard() {
                 </div>
 
                 <Link to="/profile" className="btn btn-secondary">
-                    ⚙️ Profile Settings
+                    Profile Settings
                 </Link>
             </div>
 
             {/* Stats Grid */}
             <div className="dashboard-stats">
                 <div className="stat-card sos">
-                    <div className="stat-icon">🆘</div>
+                    <div className="stat-icon">{/* 🆘 */}</div>
                     <div className="stat-details">
                         <div className="stat-value">{userReports.sos.length}</div>
                         <div className="stat-name">SOS Alerts</div>
@@ -64,7 +64,7 @@ function Dashboard() {
                 </div>
 
                 <div className="stat-card reports">
-                    <div className="stat-icon">📝</div>
+                    <div className="stat-icon">{/* 📝 */}</div>
                     <div className="stat-details">
                         <div className="stat-value">{userReports.community.length}</div>
                         <div className="stat-name">Reports Filed</div>
@@ -72,7 +72,7 @@ function Dashboard() {
                 </div>
 
                 <div className="stat-card pending">
-                    <div className="stat-icon">⏳</div>
+                    <div className="stat-icon">{/* ⏳ */}</div>
                     <div className="stat-details">
                         <div className="stat-value">
                             {userReports.sos.filter(r => r.status !== 'completed').length +
@@ -83,7 +83,7 @@ function Dashboard() {
                 </div>
 
                 <div className="stat-card resolved">
-                    <div className="stat-icon">✓</div>
+                    <div className="stat-icon">{/* ✓ */}</div>
                     <div className="stat-details">
                         <div className="stat-value">
                             {userReports.sos.filter(r => r.status === 'completed').length +
@@ -97,7 +97,7 @@ function Dashboard() {
             {/* Quick Actions */}
             <div className="quick-actions">
                 <Link to="/sos" className="action-card sos">
-                    <span className="action-icon">🆘</span>
+                    <span className="action-icon">{/* 🆘 */}</span>
                     <div>
                         <h3>Emergency SOS</h3>
                         <p>Instant alert to emergency services</p>
@@ -105,7 +105,7 @@ function Dashboard() {
                 </Link>
 
                 <Link to="/report" className="action-card report">
-                    <span className="action-icon">📝</span>
+                    <span className="action-icon">{/* 📝 */}</span>
                     <div>
                         <h3>Report Issue</h3>
                         <p>Report a community problem</p>
@@ -113,7 +113,7 @@ function Dashboard() {
                 </Link>
 
                 <Link to="/community" className="action-card community">
-                    <span className="action-icon">👥</span>
+                    <span className="action-icon">{/* 👥 */}</span>
                     <div>
                         <h3>Community Issues</h3>
                         <p>View and vote on local issues</p>
@@ -130,13 +130,13 @@ function Dashboard() {
                             className={`tab-btn ${activeTab === 'sos' ? 'active' : ''}`}
                             onClick={() => setActiveTab('sos')}
                         >
-                            🆘 SOS Alerts ({userReports.sos.length})
+                            SOS Alerts ({userReports.sos.length})
                         </button>
                         <button
                             className={`tab-btn ${activeTab === 'community' ? 'active' : ''}`}
                             onClick={() => setActiveTab('community')}
                         >
-                            📝 Reports ({userReports.community.length})
+                            Reports ({userReports.community.length})
                         </button>
                     </div>
                 </div>
@@ -145,25 +145,25 @@ function Dashboard() {
                     {activeTab === 'sos' ? (
                         userReports.sos.length === 0 ? (
                             <div className="empty-reports">
-                                <span>🛡️</span>
+                                <span>{/* 🛡️ */}</span>
                                 <p>No SOS alerts yet - stay safe!</p>
                             </div>
                         ) : (
                             userReports.sos.map(report => (
                                 <div key={report.id} className="report-item sos">
                                     <div className="report-icon">
-                                        {report.type === 'police' ? '👮' : report.type === 'ambulance' ? '🚑' : '🚒'}
+                                        {/* {report.type === 'police' ? '👮' : report.type === 'ambulance' ? '🚑' : '🚒'} */}
                                     </div>
                                     <div className="report-details">
                                         <div className="report-title">
                                             {report.type.charAt(0).toUpperCase() + report.type.slice(1)} Alert
                                             <span className={`status-badge ${report.status}`}>
-                                                {STATUS_CONFIG[report.status]?.icon} {STATUS_CONFIG[report.status]?.label}
+                                                {/* {STATUS_CONFIG[report.status]?.icon} */} {STATUS_CONFIG[report.status]?.label}
                                             </span>
                                         </div>
                                         <div className="report-meta">
-                                            <span>📍 {report.location?.address || 'Location shared'}</span>
-                                            <span>🕐 {formatDate(report.timestamp)}</span>
+                                            <span> {report.location?.address || 'Location shared'}</span>
+                                            <span> {formatDate(report.timestamp)}</span>
                                         </div>
 
                                         {report.evidence && (
@@ -209,7 +209,7 @@ function Dashboard() {
                                                     key={key}
                                                     className={`tracker-step ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
                                                 >
-                                                    <div className="step-dot">{config.icon}</div>
+                                                    <div className="step-dot">{/* {config.icon} */}</div>
                                                     <span className="step-label">{config.label}</span>
                                                 </div>
                                             )
@@ -221,7 +221,7 @@ function Dashboard() {
                     ) : (
                         userReports.community.length === 0 ? (
                             <div className="empty-reports">
-                                <span>📋</span>
+                                <span>{/* 📋 */}</span>
                                 <p>You haven't reported any community issues yet</p>
                                 <Link to="/report" className="btn btn-primary">Report an Issue</Link>
                             </div>
@@ -235,16 +235,16 @@ function Dashboard() {
                                         <div className="report-title">
                                             {issue.title}
                                             <span className={`status-badge ${issue.status}`}>
-                                                {STATUS_CONFIG[issue.status]?.icon || '⏳'} {STATUS_CONFIG[issue.status]?.label || 'Pending'}
+                                                {/* {STATUS_CONFIG[issue.status]?.icon || ''} */} {STATUS_CONFIG[issue.status]?.label || 'Pending'}
                                             </span>
                                         </div>
                                         <div className="report-meta">
-                                            <span>📍 {issue.location}</span>
-                                            <span>🕐 {formatDate(issue.timestamp)}</span>
+                                            <span> {issue.location}</span>
+                                            <span> {formatDate(issue.timestamp)}</span>
                                         </div>
                                         <div className="report-votes">
-                                            <span>👍 {issue.upvotes}</span>
-                                            <span>👎 {issue.downvotes}</span>
+                                            <span>Up: {issue.upvotes}</span>
+                                            <span>Down: {issue.downvotes}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -258,7 +258,7 @@ function Dashboard() {
             {user && (
                 <div className="medical-info-card">
                     <div className="card-header">
-                        <h3>🏥 Medical Information</h3>
+                        <h3>Medical Information</h3>
                         <Link to="/profile" className="edit-link">Edit</Link>
                     </div>
                     <div className="card-content">
@@ -268,7 +268,7 @@ function Dashboard() {
                         </div>
                         {user.allergies && (
                             <div className="info-row warning">
-                                <span className="info-label">⚠️ Allergies</span>
+                                <span className="info-label">Allergies</span>
                                 <span>{user.allergies}</span>
                             </div>
                         )}

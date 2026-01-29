@@ -85,13 +85,9 @@ const AudioEvidencePlayer = ({ src }) => {
 
       <button className="play-pause-btn" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
         {isPlaying ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-          </svg>
+          <span>Pause</span>
         ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z" />
-          </svg>
+          <span>Play</span>
         )}
       </button>
 

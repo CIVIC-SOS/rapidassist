@@ -415,7 +415,7 @@ body::before {
 .emergency-card-icon {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -833,6 +833,7 @@ body::before {
 .auth-method-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
   width: 100%;
   padding: var(--space-4);
@@ -889,6 +890,12 @@ body::before {
   flex: 1;
   height: 1px;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
 }
 
 /* ===================================
@@ -1207,7 +1214,8 @@ body::before {
 .status-tracker {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  justify-content: center;
+  gap: var(--space-4);
   padding: var(--space-4);
   background: var(--bg-glass);
   border-radius: var(--radius-xl);
@@ -1414,6 +1422,18 @@ body::before {
 
 .hidden {
   display: none;
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-info {
+  color: var(--info);
+}
+
+.text-success {
+  color: var(--success);
 }
 
 /* Animations */

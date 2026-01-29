@@ -12,9 +12,9 @@ function ReportCard({ report }) {
     } = report
 
     const statusLabels = {
-        completed: { label: 'Completed', icon: '✓' },
-        pending: { label: 'Pending', icon: '⏳' },
-        'in-progress': { label: 'In Progress', icon: '🔄' }
+        completed: { label: 'Completed' },
+        pending: { label: 'Pending' },
+        'in-progress': { label: 'In Progress' }
     }
 
     const statusInfo = statusLabels[status] || statusLabels.pending
@@ -36,7 +36,7 @@ function ReportCard({ report }) {
                 <div className="complaint-header">
                     <span className="complaint-category">{category}</span>
                     <span className={`complaint-status ${status}`}>
-                        {statusInfo.icon} {statusInfo.label}
+                        {/* {statusInfo.icon} */} {statusInfo.label}
                     </span>
                 </div>
 
@@ -45,15 +45,15 @@ function ReportCard({ report }) {
 
                 <div className="complaint-meta">
                     <span className="complaint-location">
-                        📍 {location}
+                        {/* 📍 */} {location}
                     </span>
 
                     <div className="complaint-votes">
                         <button className="vote-btn upvote">
-                            👍 {upvotes}
+                            {/* 👍 */} {upvotes}
                         </button>
                         <button className="vote-btn downvote">
-                            👎 {downvotes}
+                            {/* 👎 */} {downvotes}
                         </button>
                     </div>
                 </div>

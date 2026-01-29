@@ -111,7 +111,7 @@ function ReportIssue() {
                             />
                             {formData.image ? (
                                 <div>
-                                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>✅</div>
+                                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>{/* ✅ */}</div>
                                     <div style={{ color: 'var(--primary-400)' }}>
                                         Image Selected
                                     </div>
@@ -121,7 +121,7 @@ function ReportIssue() {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="upload-icon">📷</div>
+                                    <div className="upload-icon">{/* 📷 */}</div>
                                     <div className="upload-text">Click to upload an image</div>
                                     <div className="upload-hint">or drag and drop here</div>
                                 </>
@@ -211,7 +211,7 @@ function ReportIssue() {
                                     }
                                 }}
                             >
-                                📍 Use GPS
+                                {/* 📍 */} Use GPS
                             </button>
                         </div>
                     </div>

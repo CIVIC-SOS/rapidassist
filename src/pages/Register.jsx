@@ -237,7 +237,7 @@ function Register() {
                 {step === 2 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
-                            <span>🔐</span> Create Password
+                            Create Password
                         </h3>
 
                         <div className="form-group">
@@ -274,7 +274,7 @@ function Register() {
                 {step === 3 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
-                            <span>🏥</span> Medical Information
+                            Medical Information
                             <span className="optional-badge">Recommended</span>
                         </h3>
 
@@ -336,7 +336,7 @@ function Register() {
                 {step === 4 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
-                            <span>📞</span> Emergency Contacts
+                            Emergency Contacts
                             <span className="optional-badge">Recommended</span>
                         </h3>
 

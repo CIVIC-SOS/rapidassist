@@ -20,14 +20,14 @@ function Community() {
     const handleVote = async (issueId, voteType, e) => {
         e.stopPropagation()
         await voteOnIssue(issueId, voteType)
-        toast.success(voteType === 'up' ? '👍 Upvoted!' : '👎 Downvoted')
+        toast.success(voteType === 'up' ? 'Upvoted!' : 'Downvoted')
     }
 
     const filterOptions = [
-        { value: 'all', label: 'All Issues', icon: '📋' },
-        { value: 'submitted', label: 'Pending', icon: '⏳' },
-        { value: 'in-progress', label: 'In Progress', icon: '🔄' },
-        { value: 'completed', label: 'Completed', icon: '✓' }
+        { value: 'all', label: 'All Issues' },
+        { value: 'submitted', label: 'Pending' },
+        { value: 'in-progress', label: 'In Progress' },
+        { value: 'completed', label: 'Completed' }
     ]
 
     const statusLabels = {
@@ -44,6 +44,13 @@ function Community() {
         if (diff < 86400000) return 'Today'
         if (diff < 172800000) return 'Yesterday'
         return date.toLocaleDateString()
+    }
+
+    const stats = {
+        total: communityIssues.length,
+        pending: communityIssues.filter(i => i.status === 'submitted').length,
+        inProgress: communityIssues.filter(i => i.status === 'in-progress').length,
+        resolved: communityIssues.filter(i => i.status === 'completed').length
     }
 
     return (
@@ -64,7 +71,7 @@ function Community() {
                             className={`filter-tab ${filter === option.value ? 'active' : ''}`}
                             onClick={() => setFilter(option.value)}
                         >
-                            <span>{option.icon}</span>
+                            <span></span>
                             <span>{option.label}</span>
                         </button>
                     ))}
@@ -86,20 +93,16 @@ function Community() {
             {/* Stats Bar */}
             <div className="community-stats">
                 <div className="stat-item">
-                    <span className="stat-value">{communityIssues.length}</span>
-                    <span className="stat-label">Total Issues</span>
+                    <span className="stat-value">{stats.total}</span> Total Issues
                 </div>
-                <div className="stat-item warning">
-                    <span className="stat-value">{communityIssues.filter(i => i.status === 'submitted').length}</span>
-                    <span className="stat-label">Pending</span>
+                <div className="stat-item">
+                    <span className="stat-value warning">{stats.pending}</span> <span className="text-warning">Pending</span>
                 </div>
-                <div className="stat-item info">
-                    <span className="stat-value">{communityIssues.filter(i => i.status === 'in-progress').length}</span>
-                    <span className="stat-label">In Progress</span>
+                <div className="stat-item">
+                    <span className="stat-value info">{stats.inProgress}</span> <span className="text-info">In Progress</span>
                 </div>
-                <div className="stat-item success">
-                    <span className="stat-value">{communityIssues.filter(i => i.status === 'completed').length}</span>
-                    <span className="stat-label">Resolved</span>
+                <div className="stat-item">
+                    <span className="stat-value success">{stats.resolved}</span> <span className="text-success">Resolved</span>
                 </div>
             </div>
 
@@ -107,7 +110,7 @@ function Community() {
             <div className="community-grid">
                 {filteredIssues.length === 0 ? (
                     <div className="empty-state">
-                        <span style={{ fontSize: '3rem' }}>📭</span>
+                        <span></span>
                         <p>No issues found with the selected filter</p>
                     </div>
                 ) : (
@@ -127,7 +130,7 @@ function Community() {
                                         style={{ backgroundImage: `url(${issue.image})` }}
                                     >
                                         <span className={`issue-status ${statusInfo.class}`}>
-                                            {statusInfo.icon} {statusInfo.label}
+                                            {statusInfo.label}
                                         </span>
                                     </div>
                                 )}
@@ -142,7 +145,7 @@ function Community() {
                                     <p className="issue-description">{issue.description}</p>
 
                                     <div className="issue-location">
-                                        <span>📍</span>
+                                        <span></span>
                                         <span>{issue.location}</span>
                                     </div>
 
@@ -157,15 +160,15 @@ function Community() {
                                                 className={`vote-btn upvote ${userVote === 'up' ? 'active' : ''}`}
                                                 onClick={(e) => handleVote(issue.id, 'up', e)}
                                             >
-                                                <span>👍</span>
-                                                <span>{issue.upvotes}</span>
+                                                <span></span>
+                                                <span>👍 {issue.upvotes}</span>
                                             </button>
                                             <button
                                                 className={`vote-btn downvote ${userVote === 'down' ? 'active' : ''}`}
                                                 onClick={(e) => handleVote(issue.id, 'down', e)}
                                             >
-                                                <span>👎</span>
-                                                <span>{issue.downvotes}</span>
+                                                <span></span>
+                                                <span>👎 {issue.downvotes}</span>
                                             </button>
                                         </div>
                                     </div>
@@ -180,7 +183,7 @@ function Community() {
             {selectedIssue && (
                 <div className="modal-overlay" onClick={() => setSelectedIssue(null)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="modal-close" onClick={() => setSelectedIssue(null)}>✕</button>
+                        <button className="modal-close" onClick={() => setSelectedIssue(null)}>Close</button>
 
                         {selectedIssue.image && (
                             <img src={selectedIssue.image} alt={selectedIssue.title} className="modal-image" />
@@ -190,7 +193,7 @@ function Community() {
                             <div className="modal-header">
                                 <span className="issue-category">{selectedIssue.category}</span>
                                 <span className={`issue-status ${statusLabels[selectedIssue.status]?.class}`}>
-                                    {statusLabels[selectedIssue.status]?.icon} {statusLabels[selectedIssue.status]?.label}
+                                    {statusLabels[selectedIssue.status]?.label}
                                 </span>
                             </div>
 
@@ -198,7 +201,7 @@ function Community() {
                             <p className="modal-description">{selectedIssue.description}</p>
 
                             <div className="modal-location">
-                                <span>📍</span>
+                                <span></span>
                                 <span>{selectedIssue.location}</span>
                             </div>
 
@@ -215,14 +218,14 @@ function Community() {
                                     className={`vote-btn-lg upvote ${getUserVote(selectedIssue.id) === 'up' ? 'active' : ''}`}
                                     onClick={(e) => handleVote(selectedIssue.id, 'up', e)}
                                 >
-                                    <span>👍</span>
+                                    <span></span>
                                     <span>Support ({selectedIssue.upvotes})</span>
                                 </button>
                                 <button
                                     className={`vote-btn-lg downvote ${getUserVote(selectedIssue.id) === 'down' ? 'active' : ''}`}
                                     onClick={(e) => handleVote(selectedIssue.id, 'down', e)}
                                 >
-                                    <span>👎</span>
+                                    <span></span>
                                     <span>Not an issue ({selectedIssue.downvotes})</span>
                                 </button>
                             </div>
