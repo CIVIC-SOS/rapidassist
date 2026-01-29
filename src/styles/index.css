@@ -847,12 +847,7 @@ body::before {
 .auth-method-btn {
   display: flex;
   align-items: center;
-<<<<<<< HEAD
-  justify-content: center;
-  gap: var(--space-3);
-=======
   gap: var(--space-4);
->>>>>>> 8b7f8413b67e5817a7d3133c6e01d5caaa60a520
   width: 100%;
   padding: var(--space-4);
   background: rgba(255, 255, 255, 0.03);
@@ -911,12 +906,6 @@ body::before {
   background: rgba(255, 255, 255, 0.1);
 }
 
-<<<<<<< HEAD
-.auth-footer {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: var(--font-size-sm);
-=======
 .resend-link {
   background: none;
   border: none;
@@ -939,7 +928,6 @@ body::before {
 .resend-link:disabled {
   color: var(--text-muted);
   cursor: not-allowed;
->>>>>>> 8b7f8413b67e5817a7d3133c6e01d5caaa60a520
 }
 
 /* ===================================
