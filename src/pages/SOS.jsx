@@ -257,7 +257,7 @@ function SOS() {
         <div className="sos-page">
             <div className="page-header">
                 <h1 className="page-title" style={{ color: 'var(--error)' }}>
-                    🆘 Emergency SOS
+                    Emergency SOS
                 </h1>
                 <p className="page-subtitle">
                     Instantly alert emergency services. Your location will be shared automatically.
@@ -269,7 +269,7 @@ function SOS() {
                     {!isActivated ? (
                         <>
                             <button className="sos-button" onClick={handleActivate}>
-                                <span className="sos-button-icon">🆘</span>
+                                <span className="sos-button-icon">{/* 🆘 */}</span>
                                 <span>SOS</span>
                             </button>
 
@@ -282,7 +282,7 @@ function SOS() {
                                         className={`sos-option-card ${selectedTarget === 'myself' ? 'selected' : ''}`}
                                         onClick={() => setSelectedTarget('myself')}
                                     >
-                                        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👤</div>
+                                        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{/* 👤 */}</div>
                                         <div style={{ fontWeight: 600 }}>For Myself</div>
                                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>I need help</div>
                                     </div>
@@ -291,7 +291,7 @@ function SOS() {
                                         className={`sos-option-card ${selectedTarget === 'others' ? 'selected' : ''}`}
                                         onClick={() => setSelectedTarget('others')}
                                     >
-                                        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👥</div>
+                                        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{/* 👥 */}</div>
                                         <div style={{ fontWeight: 600 }}>For Others</div>
                                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Report emergency</div>
                                     </div>
@@ -305,7 +305,7 @@ function SOS() {
                                         className={`service-btn ${selectedService === 'all' ? 'active' : ''}`}
                                         onClick={() => setSelectedService('all')}
                                     >
-                                        🚨 All Services
+                                        All Services
                                     </button>
                                     {Object.values(EMERGENCY_SERVICES).map(service => (
                                         <button
@@ -313,7 +313,7 @@ function SOS() {
                                             className={`service-btn ${service.id} ${selectedService === service.id ? 'active' : ''}`}
                                             onClick={() => setSelectedService(service.id)}
                                         >
-                                            {service.icon} {service.title}
+                                            {/* {service.icon} */} {service.title}
                                         </button>
                                     ))}
                                 </div>
@@ -321,9 +321,9 @@ function SOS() {
 
                             <div className="sos-location-section">
                                 <div className="location-header">
-                                    <h3>📍 Your Location</h3>
+                                    <h3>Your Location</h3>
                                     <button className="btn btn-secondary" onClick={requestLocation} disabled={isLocating}>
-                                        {isLocating ? '⏳ Locating...' : '🔄 Refresh'}
+                                        {isLocating ? 'Locating...' : 'Refresh'}
                                     </button>
                                 </div>
                                 {location ? (
@@ -338,7 +338,7 @@ function SOS() {
                                     </div>
                                 ) : (
                                     <div className="location-error">
-                                        <p>⚠️ {locationError || 'Location not acquired'}</p>
+                                        <p>{locationError || 'Location not acquired'}</p>
                                     </div>
                                 )}
                             </div>
@@ -346,7 +346,7 @@ function SOS() {
                             <div className="shake-toggle">
                                 {!shakeEnabled ? (
                                     <button className="btn btn-secondary" onClick={enableShakeDetection}>
-                                        📳 Enable Shake-to-SOS
+                                        Enable Shake-to-SOS
                                     </button>
                                 ) : (
                                     <div className="shake-enabled">
@@ -373,11 +373,11 @@ function SOS() {
                             <h2 style={{ color: 'var(--text-primary)', marginTop: '1.5rem' }}>SOS Alert Activating...</h2>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Emergency services will be notified in {countdown}s</p>
 
-                            <button className="btn btn-secondary btn-lg" onClick={handleCancel}>✕ Cancel Alert</button>
+                            <button className="btn btn-secondary btn-lg" onClick={handleCancel}>Cancel Alert</button>
 
                             <div className="evidence-immediate-status" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', border: '1px solid var(--error)' }}>
                                 <div className="loading-spinner" style={{ margin: '0 auto 0.5rem', width: '20px', height: '20px' }}></div>
-                                <p style={{ color: 'var(--error)', fontWeight: 600, fontSize: '0.9rem' }}>🎥 Recording Evidence...</p>
+                                <p style={{ color: 'var(--error)', fontWeight: 600, fontSize: '0.9rem' }}>Recording Evidence...</p>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Capturing audio and images immediately</p>
                             </div>
                         </div>
@@ -385,21 +385,21 @@ function SOS() {
                 </div>
             ) : (
                 <div className="sos-complete">
-                    <div className="success-animation"><div className="success-circle"><span>✓</span></div></div>
+                    <div className="success-animation"><div className="success-circle"><span></span></div></div>
                     <h2 style={{ color: 'var(--success)', marginBottom: '0.5rem' }}>Emergency Alert Sent!</h2>
                     <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', maxWidth: '400px' }}>Help is on the way. Stay calm and stay in your location.</p>
 
                     {evidenceStatus === 'capturing' && (
                         <div className="evidence-loader" style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', border: '1px solid var(--error)' }}>
                             <div className="loading-spinner" style={{ margin: '0 auto 0.5rem' }}></div>
-                            <p style={{ color: 'var(--error)', fontWeight: 600 }}>📸 Capturing Evidence...</p>
+                            <p style={{ color: 'var(--error)', fontWeight: 600 }}>Capturing Evidence...</p>
                         </div>
                     )}
 
                     {evidenceStatus === 'uploaded' && evidenceUrls && (
                         <div className="evidence-success" style={{ marginBottom: '2rem', padding: '1.25rem', background: 'rgba(34, 197, 94, 0.05)', borderRadius: '12px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-                                <span style={{ fontSize: '1.2rem' }}>✅</span>
+                                <span style={{ fontSize: '1.2rem' }}>{/* ✅ */}</span>
                                 <strong style={{ color: 'var(--success)' }}>Multimedia Evidence Secured</strong>
                             </div>
 
@@ -426,7 +426,7 @@ function SOS() {
                     <div className="eta-cards">
                         {(selectedService === 'all' ? Object.values(EMERGENCY_SERVICES) : [EMERGENCY_SERVICES[selectedService]]).map(s => (
                             <div key={s.id} className="eta-card" style={{ borderColor: s.color }}>
-                                <span className="eta-icon">{s.icon}</span>
+                                <span className="eta-icon">{/* {s.icon} */}</span>
                                 <div className="eta-info">
                                     <div className="eta-service">{s.title}</div>
                                     <div className="eta-time">ETA: ~{Math.floor(Math.random() * 10) + 5} mins</div>
@@ -435,7 +435,7 @@ function SOS() {
                         ))}
                     </div>
 
-                    <button className="btn btn-primary btn-lg" onClick={() => setSosComplete(false)} style={{ marginTop: '2rem' }}>🆘 Send Another Alert</button>
+                    <button className="btn btn-primary btn-lg" onClick={() => setSosComplete(false)} style={{ marginTop: '2rem' }}>Send Another Alert</button>
                 </div>
             )}
         </div>

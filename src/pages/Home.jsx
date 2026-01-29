@@ -18,7 +18,6 @@ function Home() {
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-badge">
-                    <span>🛡️</span>
                     <span>Emergency Response Platform</span>
                 </div>
 
@@ -34,13 +33,13 @@ function Home() {
 
                 <div className="hero-actions">
                     <Link to="/sos" className="btn btn-danger btn-lg">
-                        🆘 Emergency SOS
+                        Emergency SOS
                     </Link>
                     <Link to="/report" className="btn btn-primary btn-lg">
-                        📝 Report an Issue
+                        Report an Issue
                     </Link>
                     <Link to="/community" className="btn btn-secondary btn-lg">
-                        👥 Community Issues
+                        Community Issues
                     </Link>
                 </div>
             </section>
@@ -86,7 +85,7 @@ function Home() {
                     gap: '1rem'
                 }}>
                     <Link to="/report" className="card" style={{ textDecoration: 'none' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📸</div>
+                        {/* Removed icon */}
                         <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                             Report Public/Civic Issue
                         </h3>
@@ -96,7 +95,7 @@ function Home() {
                     </Link>
 
                     <Link to="/community" className="card" style={{ textDecoration: 'none' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🗳️</div>
+                        {/* Removed icon */}
                         <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                             Community Issues
                         </h3>
@@ -106,7 +105,7 @@ function Home() {
                     </Link>
 
                     <Link to="/dashboard" className="card" style={{ textDecoration: 'none' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📊</div>
+                        {/* Removed icon */}
                         <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                             SOS Reports
                         </h3>
@@ -116,7 +115,7 @@ function Home() {
                     </Link>
 
                     <Link to="/register" className="card" style={{ textDecoration: 'none' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👤</div>
+                        {/* Removed icon */}
                         <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                             User Information
                         </h3>

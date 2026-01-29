@@ -124,7 +124,7 @@ function Login() {
                                 onClick={handleRequestOTP}
                                 disabled={isLoading || formData.aadhar.length !== 12}
                             >
-                                {isLoading ? '⏳ Sending OTP...' : '📱 Send OTP'}
+                                {isLoading ? 'Sending OTP...' : 'Send OTP'}
                             </button>
                         ) : (
                             <>
@@ -154,7 +154,7 @@ function Login() {
                                     className="btn btn-primary w-full"
                                     disabled={isLoading || formData.otp.length !== 6}
                                 >
-                                    {isLoading ? '⏳ Verifying...' : '✓ Verify & Login'}
+                                    {isLoading ? 'Verifying...' : 'Verify & Login'}
                                 </button>
                             </>
                         )}
@@ -190,7 +190,7 @@ function Login() {
                                 onClick={handleRequestOTP}
                                 disabled={isLoading || formData.mobile.length !== 10}
                             >
-                                {isLoading ? '⏳ Sending OTP...' : '📱 Send OTP'}
+                                {isLoading ? 'Sending OTP...' : 'Send OTP'}
                             </button>
                         ) : (
                             <>
@@ -220,7 +220,7 @@ function Login() {
                                     className="btn btn-primary w-full"
                                     disabled={isLoading || formData.otp.length !== 6}
                                 >
-                                    {isLoading ? '⏳ Verifying...' : '✓ Verify & Login'}
+                                    {isLoading ? 'Verifying...' : 'Verify & Login'}
                                 </button>
                             </>
                         )}
@@ -231,7 +231,7 @@ function Login() {
                 return (
                     <form onSubmit={handleSubmit}>
                         <div className="admin-login-notice">
-                            <span>🔐</span>
+                            <span>{/* 🔐 */}</span>
                             <span>Admin access is restricted to authorized personnel</span>
                         </div>
 
@@ -272,7 +272,7 @@ function Login() {
                             className="btn btn-primary w-full"
                             disabled={isLoading}
                         >
-                            {isLoading ? '⏳ Authenticating...' : '🔐 Login as Admin'}
+                            {isLoading ? 'Authenticating...' : 'Login as Admin'}
                         </button>
                     </form>
                 )
@@ -303,39 +303,33 @@ function Login() {
                             className="auth-method-btn aadhar"
                             onClick={() => setLoginMethod('aadhar')}
                         >
-                            <div className="auth-method-icon">🪪</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Aadhar</div>
                             </div>
-                            <span className="method-arrow">→</span>
-                        </button>
+                             </button>
 
                         <button
                             className="auth-method-btn mobile"
                             onClick={() => setLoginMethod('mobile')}
                         >
-                            <div className="auth-method-icon">📱</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Mobile</div>
                             </div>
-                            <span className="method-arrow">→</span>
                         </button>
 
                         <button
                             className="auth-method-btn admin"
                             onClick={() => setLoginMethod('admin')}
                         >
-                            <div className="auth-method-icon">🔐</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Admin Login</div>
                             </div>
-                            <span className="method-arrow">→</span>
                         </button>
                     </div>
                 ) : (
                     <>
                         <button
-                            className="back-button"
+                            className="btn btn-secondary w-full mb-6"
                             onClick={() => {
                                 setLoginMethod(null)
                                 setOtpSent(false)

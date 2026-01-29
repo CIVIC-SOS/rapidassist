@@ -6,20 +6,20 @@ function EmergencyCard({ type, title, number, onCall }) {
     }
 
     const actions = [
-        { icon: '📍', label: 'LOCATION' },
-        { icon: '📋', label: 'DETAILS' }
+        { label: 'LOCATION' },
+        { label: 'DETAILS' }
     ]
 
     return (
         <div className={`emergency-card ${type}`} onClick={onCall}>
             <div className="emergency-card-header">
                 <div className="emergency-card-icon">
-                    {icons[type]}
+                    <span>{icons[type]}</span>
                 </div>
                 <div>
                     <h3 className="emergency-card-title">{title}</h3>
                     <p className="emergency-card-number">
-                        <span>📞</span> {number}
+                        {number}
                     </p>
                 </div>
             </div>
@@ -34,7 +34,7 @@ function EmergencyCard({ type, title, number, onCall }) {
                             console.log(`${action.label} action for ${title}`)
                         }}
                     >
-                        <span className="icon">{action.icon}</span>
+                        {/* <span className="icon">{action.icon}</span> */}
                         <span>{action.label}</span>
                     </button>
                 ))}
@@ -49,7 +49,7 @@ function EmergencyCard({ type, title, number, onCall }) {
                     }}
                     style={{ gridColumn: 'span 2' }}
                 >
-                    <span className="icon">📤</span>
+                    {/* <span className="icon">📤</span> */}
                     <span>FWD {number}</span>
                 </button>
             </div>

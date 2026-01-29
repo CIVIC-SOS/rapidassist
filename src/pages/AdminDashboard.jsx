@@ -43,7 +43,7 @@ function AdminDashboard() {
         <div className="admin-dashboard">
             <div className="page-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
-                    <span style={{ fontSize: '2rem' }}>🛡️</span>
+                    {/* <span style={{ fontSize: '2rem' }}>🛡️</span> */}
                     <div>
                         <h1 className="page-title">Admin Control Center</h1>
                         <p className="page-subtitle">
@@ -56,7 +56,7 @@ function AdminDashboard() {
             {/* Stats Cards */}
             <div className="admin-stats">
                 <div className="admin-stat-card urgent">
-                    <div className="stat-icon-large">🆘</div>
+                    <div className="stat-icon-large">{/* 🆘 */}</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.pendingSOS}</div>
                         <div className="stat-label">Pending SOS</div>
@@ -65,7 +65,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-stat-card active">
-                    <div className="stat-icon-large">🔄</div>
+                    <div className="stat-icon-large">{/* 🔄 */}</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.inProgressSOS}</div>
                         <div className="stat-label">In Progress</div>
@@ -73,7 +73,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-stat-card success">
-                    <div className="stat-icon-large">✓</div>
+                    <div className="stat-icon-large">{/* ✓ */}</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.completedSOS}</div>
                         <div className="stat-label">Resolved Today</div>
@@ -81,7 +81,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-stat-card info">
-                    <div className="stat-icon-large">📋</div>
+                    <div className="stat-icon-large">{/* 📋 */}</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.totalCommunity}</div>
                         <div className="stat-label">Community Issues</div>
@@ -94,18 +94,18 @@ function AdminDashboard() {
                 <div className="filter-group">
                     <span style={{ color: 'var(--text-muted)', marginRight: '1rem' }}>Filter:</span>
                     {[
-                        { value: 'all', label: 'All Reports', icon: '📋' },
-                        { value: 'submitted', label: 'Pending', icon: '⏳' },
-                        { value: 'police', label: 'Police', icon: '👮' },
-                        { value: 'ambulance', label: 'Medical', icon: '🚑' },
-                        { value: 'fire', label: 'Fire', icon: '🚒' }
+                        { value: 'all', label: 'All Reports' },
+                        { value: 'submitted', label: 'Pending' },
+                        { value: 'police', label: 'Police' },
+                        { value: 'ambulance', label: 'Medical' },
+                        { value: 'fire', label: 'Fire' }
                     ].map(f => (
                         <button
                             key={f.value}
                             className={`filter-btn ${filter === f.value ? 'active' : ''}`}
                             onClick={() => setFilter(f.value)}
                         >
-                            <span>{f.icon}</span>
+                            {/* <span>{f.icon}</span> */}
                             <span>{f.label}</span>
                         </button>
                     ))}
@@ -122,13 +122,13 @@ function AdminDashboard() {
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        <span>📍</span> Live SOS Reports
+                        {/* <span>📍</span> */} Live SOS Reports
                         <span className="live-indicator"></span>
                     </h3>
 
                     {filteredReports.length === 0 ? (
                         <div className="empty-state">
-                            <span style={{ fontSize: '3rem' }}>✅</span>
+                            <span style={{ fontSize: '3rem' }}>{/* ✅ */}</span>
                             <p>No pending reports</p>
                         </div>
                     ) : (
@@ -142,16 +142,16 @@ function AdminDashboard() {
                                     <div className="report-type-badge" style={{
                                         background: EMERGENCY_SERVICES[report.type]?.gradient
                                     }}>
-                                        {EMERGENCY_SERVICES[report.type]?.icon} {EMERGENCY_SERVICES[report.type]?.title}
+                                        {/* {EMERGENCY_SERVICES[report.type]?.icon} */} {EMERGENCY_SERVICES[report.type]?.title}
                                     </div>
                                     <span className={`status-badge ${report.status}`}>
-                                        {STATUS_CONFIG[report.status]?.icon} {STATUS_CONFIG[report.status]?.label}
+                                        {/* {STATUS_CONFIG[report.status]?.icon} */} {STATUS_CONFIG[report.status]?.label}
                                     </span>
                                 </div>
 
                                 <div className="report-body">
                                     <div className="report-user">
-                                        <span style={{ fontSize: '1.5rem' }}>👤</span>
+                                        <span style={{ fontSize: '1.5rem' }}>{/* 👤 */}</span>
                                         <div>
                                             <div style={{ fontWeight: 600 }}>{report.userName}</div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -161,12 +161,12 @@ function AdminDashboard() {
                                     </div>
 
                                     <div className="report-location">
-                                        <span>📍</span>
+                                        <span>{/* 📍 */}</span>
                                         <span>{report.location?.address || 'Location pending...'}</span>
                                     </div>
 
                                     <div className="report-time">
-                                        <span>🕐</span>
+                                        <span>{/* 🕐 */}</span>
                                         <span>{formatTime(report.timestamp)}</span>
                                     </div>
                                 </div>
@@ -177,19 +177,19 @@ function AdminDashboard() {
                                             className="action-btn police"
                                             onClick={(e) => { e.stopPropagation(); handleAssign(report.id, 'police') }}
                                         >
-                                            👮 Police
+                                            {/* 👮 */} Police
                                         </button>
                                         <button
                                             className="action-btn ambulance"
                                             onClick={(e) => { e.stopPropagation(); handleAssign(report.id, 'ambulance') }}
                                         >
-                                            🚑 Ambulance
+                                            {/* 🚑 */} Ambulance
                                         </button>
                                         <button
                                             className="action-btn fire"
                                             onClick={(e) => { e.stopPropagation(); handleAssign(report.id, 'fire') }}
                                         >
-                                            🚒 Fire
+                                            {/* 🚒 */} Fire
                                         </button>
                                     </div>
                                 )}
@@ -203,7 +203,7 @@ function AdminDashboard() {
                                                 handleStatusChange(report.id, report.status === 'assigned' ? 'in-progress' : 'completed')
                                             }}
                                         >
-                                            {report.status === 'assigned' ? '🔄 Start Response' : '✓ Mark Complete'}
+                                            {report.status === 'assigned' ? 'Start Response' : 'Mark Complete'}
                                         </button>
                                     </div>
                                 )}
@@ -222,7 +222,7 @@ function AdminDashboard() {
                                     className="close-btn"
                                     onClick={() => setSelectedReport(null)}
                                 >
-                                    ✕
+                                    Close
                                 </button>
                             </div>
 
@@ -235,7 +235,7 @@ function AdminDashboard() {
                                         background: 'var(--bg-glass)',
                                         borderRadius: 'var(--radius-lg)'
                                     }}>
-                                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🗺️</div>
+                                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{/* 🗺️ */}</div>
                                         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
                                             {selectedReport.location?.address}
                                         </p>
@@ -267,7 +267,7 @@ function AdminDashboard() {
                                         )}
                                         {selectedReport.medicalInfo.allergies && (
                                             <div className="info-row alert">
-                                                <span>⚠️ Allergies:</span>
+                                                <span>Allergies:</span>
                                                 <span>{selectedReport.medicalInfo.allergies}</span>
                                             </div>
                                         )}
@@ -277,7 +277,7 @@ function AdminDashboard() {
 
                             {selectedReport.description && (
                                 <div className="detail-section">
-                                    <h4>📝 Description</h4>
+                                    <h4>Description</h4>
                                     <p style={{ color: 'var(--text-secondary)' }}>
                                         {selectedReport.description}
                                     </p>
@@ -287,7 +287,7 @@ function AdminDashboard() {
                             {selectedReport.evidence && (
                                 <div className="detail-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
                                     <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-                                        📂 Multimedia Evidence
+                                        Multimedia Evidence
                                     </h4>
 
                                     {selectedReport.evidence.audioUrl && (
@@ -352,7 +352,7 @@ function AdminDashboard() {
                         </>
                     ) : (
                         <div className="detail-empty">
-                            <span style={{ fontSize: '3rem' }}>👆</span>
+                            <span style={{ fontSize: '3rem' }}>{/* 👆 */}</span>
                             <p>Select a report to view details</p>
                         </div>
                     )}

@@ -6,11 +6,11 @@ function StatusTracker({ steps, currentStep }) {
                     <div
                         key={step.id}
                         className={`status-step ${index < currentStep ? 'completed' :
-                                index === currentStep ? 'current' : ''
+                            index === currentStep ? 'current' : ''
                             }`}
                     >
                         <div className="status-step-icon">
-                            {index < currentStep ? '✓' : step.icon || (index + 1)}
+                            {index < currentStep ? (index + 1) : /* step.icon || */ (index + 1)}
                         </div>
                         <span className="status-step-label">{step.label}</span>
                     </div>

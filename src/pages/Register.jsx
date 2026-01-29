@@ -89,6 +89,14 @@ function Register() {
                 return true
             case 3:
                 return true // Medical info is optional
+            case 4:
+                // Ensure at least one contact has both name and phone if they try to submit
+                const validContacts = formData.contacts.filter(c => c.name && c.phone)
+                if (validContacts.length === 0) {
+                    toast.error('Please add at least one emergency contact with a name and phone number')
+                    return false
+                }
+                return true
             default:
                 return true
         }
@@ -161,7 +169,11 @@ function Register() {
                 ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="register-form">
+            <form
+                onSubmit={handleSubmit}
+                onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+                className="register-form"
+            >
                 {/* Step 1: Personal Information */}
                 {step === 1 && (
                     <div className="register-section animate-in">
@@ -237,7 +249,7 @@ function Register() {
                 {step === 2 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
-                            <span>🔐</span> Create Password
+                            Create Password
                         </h3>
 
                         <div className="form-group">
@@ -274,7 +286,7 @@ function Register() {
                 {step === 3 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
-                            <span>🏥</span> Medical Information
+                            Medical Information
                             <span className="optional-badge">Recommended</span>
                         </h3>
 
@@ -303,7 +315,7 @@ function Register() {
                             <label className="form-label">Medical Conditions</label>
                             <div className="checkbox-grid">
                                 {MEDICAL_CONDITIONS.map(condition => (
-                                    <label key={condition.id} className="form-checkbox condition-checkbox">
+                                    <label key={condition.id} className={`form-checkbox condition-checkbox ${formData.medicalConditions[condition.id] ? 'selected' : ''}`}>
                                         <input
                                             type="checkbox"
                                             checked={formData.medicalConditions[condition.id] || false}
@@ -336,7 +348,7 @@ function Register() {
                 {step === 4 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
-                            <span>📞</span> Emergency Contacts
+                            Emergency Contacts
                             <span className="optional-badge">Recommended</span>
                         </h3>
 

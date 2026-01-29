@@ -74,7 +74,7 @@ function UserProfile() {
     if (!user) {
         return (
             <div className="empty-state" style={{ padding: '4rem' }}>
-                <span style={{ fontSize: '3rem' }}>🔒</span>
+                <span style={{ fontSize: '3rem' }}>{/* 🔒 */}</span>
                 <p>Please login to view your profile</p>
             </div>
         )
@@ -96,9 +96,9 @@ function UserProfile() {
                 </div>
                 <div className="profile-info">
                     <h2>{user.name}</h2>
-                    <p>{user.mobile ? `📱 ${user.mobile}` : user.aadhar ? `🪪 ****${user.aadhar?.slice(-4)}` : ''}</p>
+                    <p>{user.mobile ? `${user.mobile}` : user.aadhar ? `****${user.aadhar?.slice(-4)}` : ''}</p>
                     <div className="profile-badges">
-                        <span className="badge-verified">✓ Verified</span>
+                        <span className="badge-verified">Verified</span>
                         {user.bloodGroup && (
                             <span className="badge-blood">{user.bloodGroup}</span>
                         )}
@@ -109,10 +109,10 @@ function UserProfile() {
                         className="btn btn-secondary"
                         onClick={() => setIsEditing(!isEditing)}
                     >
-                        {isEditing ? '✕ Cancel' : '✏️ Edit Profile'}
+                        {isEditing ? 'Cancel' : 'Edit Profile'}
                     </button>
                     <button className="btn btn-danger" onClick={handleLogout}>
-                        🚪 Logout
+                        Logout
                     </button>
                 </div>
             </div>
@@ -121,7 +121,7 @@ function UserProfile() {
                 {/* Personal Information */}
                 <div className="profile-section">
                     <h3 className="section-title">
-                        <span>👤</span> Personal Information
+                        <span>{/* 👤 */}</span> Personal Information
                     </h3>
 
                     {isEditing ? (
@@ -186,7 +186,7 @@ function UserProfile() {
                 {/* Medical Information */}
                 <div className="profile-section">
                     <h3 className="section-title">
-                        <span>🏥</span> Medical Information
+                        <span>{/* 🏥 */}</span> Medical Information
                         <span className="section-badge important">Shared in Emergencies</span>
                     </h3>
 
@@ -218,7 +218,7 @@ function UserProfile() {
                                                 onChange={() => handleMedicalChange(condition.id)}
                                             />
                                             <span className="form-checkbox-label">
-                                                {condition.icon} {condition.label}
+                                                {/* {condition.icon} */} {condition.label}
                                             </span>
                                         </label>
                                     ))}
@@ -240,7 +240,7 @@ function UserProfile() {
                     ) : (
                         <div className="medical-display">
                             <div className="blood-group-display">
-                                <span className="blood-icon">🩸</span>
+                                <span className="blood-icon">{/* 🩸 */}</span>
                                 <span className="blood-type">{user.bloodGroup || 'Not set'}</span>
                             </div>
 
@@ -251,7 +251,7 @@ function UserProfile() {
                                         .filter(([_, v]) => v)
                                         .map(([key]) => (
                                             <span key={key} className="condition-tag">
-                                                {MEDICAL_CONDITIONS.find(c => c.id === key)?.icon} {MEDICAL_CONDITIONS.find(c => c.id === key)?.label || key}
+                                                {/* {MEDICAL_CONDITIONS.find(c => c.id === key)?.icon} */} {MEDICAL_CONDITIONS.find(c => c.id === key)?.label || key}
                                             </span>
                                         ))
                                     }
@@ -263,7 +263,7 @@ function UserProfile() {
 
                             {user.allergies && (
                                 <div className="allergy-warning">
-                                    <span>⚠️</span>
+                                    <span>{/* ⚠️ */}</span>
                                     <div>
                                         <strong>Allergies:</strong>
                                         <span>{user.allergies}</span>
@@ -277,7 +277,7 @@ function UserProfile() {
                 {/* Emergency Contacts */}
                 <div className="profile-section full-width">
                     <h3 className="section-title">
-                        <span>📞</span> Emergency Contacts
+                        <span>{/* 📞 */}</span> Emergency Contacts
                         <span className="section-badge">Notified during SOS</span>
                     </h3>
 
@@ -313,7 +313,7 @@ function UserProfile() {
                                             className="remove-contact-btn"
                                             onClick={() => removeContact(index)}
                                         >
-                                            ✕
+                                            Remove
                                         </button>
                                     )}
                                 </div>
@@ -335,7 +335,7 @@ function UserProfile() {
                                         <div className="contact-relation">{contact.relation}</div>
                                     </div>
                                     <a href={`tel:${contact.phone}`} className="call-btn">
-                                        📞
+                                        {/* 📞 */} Call
                                     </a>
                                 </div>
                             ))}
@@ -349,7 +349,7 @@ function UserProfile() {
                 {isEditing && (
                     <div className="save-section">
                         <button className="btn btn-primary btn-lg" onClick={handleSave}>
-                            💾 Save Changes
+                            Save Changes
                         </button>
                     </div>
                 )}
@@ -358,20 +358,20 @@ function UserProfile() {
             {/* My Reports Section */}
             <div className="my-reports-section">
                 <h3 className="section-title">
-                    <span>📋</span> My Reports
+                    <span>{/* 📋 */}</span> My Reports
                 </h3>
 
                 <div className="reports-tabs">
                     <div className="reports-summary">
                         <div className="summary-card">
-                            <span className="summary-icon">🆘</span>
+                            <span className="summary-icon">{/* 🆘 */}</span>
                             <div>
                                 <div className="summary-number">{userReports.sos.length}</div>
                                 <div className="summary-label">SOS Alerts</div>
                             </div>
                         </div>
                         <div className="summary-card">
-                            <span className="summary-icon">📝</span>
+                            <span className="summary-icon">{/* 📝 */}</span>
                             <div>
                                 <div className="summary-number">{userReports.community.length}</div>
                                 <div className="summary-label">Community Reports</div>

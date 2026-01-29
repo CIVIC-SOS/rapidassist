@@ -32,7 +32,7 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
             {!isActivated ? (
                 <>
                     <button className="sos-button" onClick={handleActivate}>
-                        <span className="sos-button-icon">🆘</span>
+                        {/* <span className="sos-button-icon">🆘</span> */}
                         <span>SOS</span>
                     </button>
 
@@ -47,7 +47,7 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
                                 className={`sos-option-card ${selectedTarget === 'myself' ? 'selected' : ''}`}
                                 onClick={() => setSelectedTarget('myself')}
                             >
-                                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👤</div>
+                                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{/* 👤 */}</div>
                                 <div style={{ fontWeight: 600 }}>For Myself</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>I need help</div>
                             </div>
@@ -56,7 +56,7 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
                                 className={`sos-option-card ${selectedTarget === 'others' ? 'selected' : ''}`}
                                 onClick={() => setSelectedTarget('others')}
                             >
-                                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👥</div>
+                                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{/* 👥 */}</div>
                                 <div style={{ fontWeight: 600 }}>For Others</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Report emergency</div>
                             </div>
@@ -93,7 +93,7 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
                                 borderRadius: '0.5rem',
                                 fontSize: '0.875rem'
                             }}>
-                                👮 Police
+                                {/* 👮 */} Police
                             </span>
                             <span style={{
                                 padding: '0.5rem 1rem',
@@ -101,7 +101,7 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
                                 borderRadius: '0.5rem',
                                 fontSize: '0.875rem'
                             }}>
-                                🚑 Ambulance
+                                {/* 🚑 */} Ambulance
                             </span>
                             <span style={{
                                 padding: '0.5rem 1rem',
@@ -109,7 +109,7 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
                                 borderRadius: '0.5rem',
                                 fontSize: '0.875rem'
                             }}>
-                                🚒 Fireforce
+                                {/* 🚒 */} Fireforce
                             </span>
                         </div>
                     </div>
