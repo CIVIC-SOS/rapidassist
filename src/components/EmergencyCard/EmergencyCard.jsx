@@ -6,9 +6,7 @@ function EmergencyCard({ type, title, number, onCall }) {
     }
 
     const actions = [
-        { icon: '🎙️', label: 'VOICE' },
         { icon: '📍', label: 'LOCATION' },
-        { icon: '📷', label: 'PHOTOS' },
         { icon: '📋', label: 'DETAILS' }
     ]
 
@@ -53,17 +51,6 @@ function EmergencyCard({ type, title, number, onCall }) {
                 >
                     <span className="icon">📤</span>
                     <span>FWD {number}</span>
-                </button>
-                <button
-                    className="emergency-action-btn"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        console.log(`Additional options for ${title}`)
-                    }}
-                    style={{ gridColumn: 'span 2' }}
-                >
-                    <span className="icon">⚡</span>
-                    <span>QUICK ACT</span>
                 </button>
             </div>
         </div>

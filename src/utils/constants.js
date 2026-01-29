@@ -93,6 +93,36 @@ export const DEMO_USERS = {
         adminId: 'ADMIN001',
         department: 'Police Control Room',
         badge: 'PCR-1234'
+    },
+    policeAdmin: {
+        id: 'police-admin-001',
+        type: 'admin',
+        adminType: 'police',
+        name: 'Inspector Sharma',
+        adminId: 'POLICE001',
+        password: 'police123',
+        department: 'Police Department',
+        badge: 'POL-1234'
+    },
+    ambulanceAdmin: {
+        id: 'ambulance-admin-001',
+        type: 'admin',
+        adminType: 'ambulance',
+        name: 'Dr. Priya Mehta',
+        adminId: 'AMBULANCE001',
+        password: 'ambulance123',
+        department: 'Emergency Medical Services',
+        badge: 'EMS-5678'
+    },
+    fireAdmin: {
+        id: 'fire-admin-001',
+        type: 'admin',
+        adminType: 'fire',
+        name: 'Chief Rajan Singh',
+        adminId: 'FIRE001',
+        password: 'fire123',
+        department: 'Fire & Rescue Department',
+        badge: 'FIRE-9012'
     }
 }
 

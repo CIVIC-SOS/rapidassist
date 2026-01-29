@@ -70,7 +70,7 @@ function Home() {
             </section>
 
             {/* Quick Actions */}
-            <section style={{ marginTop: '3rem' }}>
+            <section style={{ marginTop: '1.5rem' }}>
                 <h2 style={{
                     fontSize: '1.5rem',
                     fontWeight: 700,

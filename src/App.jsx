@@ -11,6 +11,9 @@ import ReportIssue from './pages/ReportIssue'
 import SOS from './pages/SOS'
 import Community from './pages/Community'
 import AdminDashboard from './pages/AdminDashboard'
+import PoliceAdmin from './pages/PoliceAdmin'
+import AmbulanceAdmin from './pages/AmbulanceAdmin'
+import FireAdmin from './pages/FireAdmin'
 import UserProfile from './pages/UserProfile'
 
 // Protected Route wrapper for authenticated users
@@ -93,6 +96,15 @@ function AppContent() {
                     {/* Admin Routes */}
                     <Route path="/admin" element={
                         <ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>
+                    } />
+                    <Route path="/admin/police" element={
+                        <ProtectedRoute adminOnly><PoliceAdmin /></ProtectedRoute>
+                    } />
+                    <Route path="/admin/ambulance" element={
+                        <ProtectedRoute adminOnly><AmbulanceAdmin /></ProtectedRoute>
+                    } />
+                    <Route path="/admin/fire" element={
+                        <ProtectedRoute adminOnly><FireAdmin /></ProtectedRoute>
                     } />
                     <Route path="/admin/report/:id" element={
                         <ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>

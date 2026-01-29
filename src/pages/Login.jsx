@@ -73,7 +73,24 @@ function Login() {
 
         if (result.success) {
             toast.success(`Welcome, ${result.user.name}!`)
-            navigate(result.user.type === 'admin' ? '/admin' : '/')
+            // Redirect based on admin type
+            if (result.user.type === 'admin') {
+                switch (result.user.adminType) {
+                    case 'police':
+                        navigate('/admin/police')
+                        break
+                    case 'ambulance':
+                        navigate('/admin/ambulance')
+                        break
+                    case 'fire':
+                        navigate('/admin/fire')
+                        break
+                    default:
+                        navigate('/admin')
+                }
+            } else {
+                navigate('/')
+            }
         } else {
             toast.error(result.error)
         }
@@ -241,8 +258,13 @@ function Login() {
                             />
                         </div>
 
-                        <div className="demo-credentials">
-                            <span>💡 Demo:</span> admin / admin123
+                        <div className="demo-credentials" style={{ textAlign: 'left', fontSize: '0.8rem' }}>
+                            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>💡 Demo Credentials:</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                <span>👮 Police: police / police123</span>
+                                <span>🚑 Ambulance: ambulance / ambulance123</span>
+                                <span>🚒 Fire: fire / fire123</span>
+                            </div>
                         </div>
 
                         <button
@@ -284,9 +306,6 @@ function Login() {
                             <div className="auth-method-icon">🪪</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Aadhar</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    Use your Aadhar card for verification
-                                </div>
                             </div>
                             <span className="method-arrow">→</span>
                         </button>
@@ -298,9 +317,6 @@ function Login() {
                             <div className="auth-method-icon">📱</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Login with Mobile</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    OTP will be sent to your number
-                                </div>
                             </div>
                             <span className="method-arrow">→</span>
                         </button>
@@ -312,9 +328,6 @@ function Login() {
                             <div className="auth-method-icon">🔐</div>
                             <div>
                                 <div style={{ fontWeight: 600 }}>Admin Login</div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    For authorized personnel only
-                                </div>
                             </div>
                             <span className="method-arrow">→</span>
                         </button>
