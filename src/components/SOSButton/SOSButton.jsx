@@ -32,7 +32,6 @@ function SOSButton({ onActivate, countdownSeconds = 5 }) {
             {!isActivated ? (
                 <>
                     <button className="sos-button" onClick={handleActivate}>
-                        <span className="sos-button-icon">🆘</span>
                         <span>SOS</span>
                     </button>
 

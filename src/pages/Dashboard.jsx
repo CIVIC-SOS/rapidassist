@@ -55,7 +55,7 @@ function Dashboard() {
             {/* Stats Grid */}
             <div className="dashboard-stats">
                 <div className="stat-card sos">
-                    <div className="stat-icon">🆘</div>
+                    <div className="stat-icon">🛡️</div>
                     <div className="stat-details">
                         <div className="stat-value">{userReports.sos.length}</div>
                         <div className="stat-name">SOS Alerts</div>
@@ -96,7 +96,7 @@ function Dashboard() {
             {/* Quick Actions */}
             <div className="quick-actions">
                 <Link to="/sos" className="action-card sos">
-                    <span className="action-icon">🆘</span>
+                    <span className="action-icon">🛡️</span>
                     <div>
                         <h3>Emergency SOS</h3>
                         <p>Instant alert to emergency services</p>
@@ -129,7 +129,7 @@ function Dashboard() {
                             className={`tab-btn ${activeTab === 'sos' ? 'active' : ''}`}
                             onClick={() => setActiveTab('sos')}
                         >
-                            🆘 SOS Alerts ({userReports.sos.length})
+                            SOS Alerts ({userReports.sos.length})
                         </button>
                         <button
                             className={`tab-btn ${activeTab === 'community' ? 'active' : ''}`}
