@@ -42,30 +42,34 @@ function Header() {
                         👥 Community
                     </NavLink>
 
-                    <NavLink
-                        to="/report"
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                        onClick={closeMobileMenu}
-                    >
-                        📝 Report
-                    </NavLink>
+                    {isAuthenticated && (
+                        <>
+                            <NavLink
+                                to="/report"
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                onClick={closeMobileMenu}
+                            >
+                                📝 Report
+                            </NavLink>
 
-                    {isAdmin ? (
-                        <NavLink
-                            to="/admin"
-                            className={({ isActive }) => `nav-link admin-link ${isActive ? 'active' : ''}`}
-                            onClick={closeMobileMenu}
-                        >
-                            🛡️ Admin
-                        </NavLink>
-                    ) : (
-                        <NavLink
-                            to="/dashboard"
-                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                            onClick={closeMobileMenu}
-                        >
-                            📊 Dashboard
-                        </NavLink>
+                            {isAdmin ? (
+                                <NavLink
+                                    to="/admin"
+                                    className={({ isActive }) => `nav-link admin-link ${isActive ? 'active' : ''}`}
+                                    onClick={closeMobileMenu}
+                                >
+                                    🛡️ Admin
+                                </NavLink>
+                            ) : (
+                                <NavLink
+                                    to="/dashboard"
+                                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                    onClick={closeMobileMenu}
+                                >
+                                    📊 Dashboard
+                                </NavLink>
+                            )}
+                        </>
                     )}
                 </nav>
 
@@ -130,14 +134,6 @@ function Header() {
                         </Link>
                     )}
 
-                    <Link
-                        to="/sos"
-                        className="sos-link"
-                        onClick={closeMobileMenu}
-                    >
-                        <span className="sos-pulse"></span>
-                        🆘 SOS
-                    </Link>
 
                     <button
                         className="mobile-menu-toggle"
