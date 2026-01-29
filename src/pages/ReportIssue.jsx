@@ -167,52 +167,7 @@ function ReportIssue() {
         }}>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-<<<<<<< HEAD
-            <div className="report-card">
-                <form onSubmit={handleSubmit}>
-                    {/* Image Upload */}
-                    <div className="form-group">
-                        <label className="form-label">Upload Image</label>
-                        <label className="upload-area">
-                            <input
-                                type="file"
-                                name="imageInput"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                style={{ display: 'none' }}
-                            />
-                            {formData.image ? (
-                                <div>
-                                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>{/* ✅ */}</div>
-                                    <div style={{ color: 'var(--primary-400)' }}>
-                                        Image Selected
-                                    </div>
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                                        Click to change
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="upload-icon">{/* 📷 */}</div>
-                                    <div className="upload-text">Click to upload an image</div>
-                                    <div className="upload-hint">or drag and drop here</div>
-                                </>
-                            )}
-                        </label>
-                    </div>
 
-                    {/* Issue Title */}
-                    <div className="form-group">
-                        <label className="form-label">Issue Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            className="form-input"
-                            placeholder="Brief title describing the issue"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            required
-=======
             {step === 'camera' && (
                 <div style={{ width: '100%', maxWidth: '800px', position: 'relative' }}>
                     <div style={{
@@ -228,7 +183,7 @@ function ReportIssue() {
                             autoPlay
                             playsInline
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
->>>>>>> 8b7f8413b67e5817a7d3133c6e01d5caaa60a520
+
                         />
                         <div style={{
                             position: 'absolute',
@@ -257,9 +212,7 @@ function ReportIssue() {
                                 onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.92)'}
                                 onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
-<<<<<<< HEAD
-                                {/* 📍 */} Use GPS
-=======
+
                                 <div style={{
                                     width: '56px',
                                     height: '56px',
@@ -324,7 +277,7 @@ function ReportIssue() {
                                 style={{ minWidth: '180px' }}
                             >
                                 {isAnalyzing ? '🤖 Analyzing...' : isUploading ? 'Uploading...' : '✨ Analyze & Report'}
->>>>>>> 8b7f8413b67e5817a7d3133c6e01d5caaa60a520
+
                             </button>
                         </div>
                     </div>
