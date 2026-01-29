@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useReports } from '../context/ReportsContext'
 import { useToast } from '../context/ToastContext'
 import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
@@ -10,7 +10,22 @@ function AdminDashboard() {
     const { user } = useAuth()
     const toast = useToast()
     const [filter, setFilter] = useState('all')
-    const [selectedReport, setSelectedReport] = useState(null)
+    const [selectedReportId, setSelectedReportId] = useState(null)
+    const lastReportIdRef = useRef(null)
+
+    // Derived: Get the full report object from the live context array
+    const selectedReport = sosReports.find(r => r.id === selectedReportId)
+
+    // Auto-select newest report when it arrives
+    useEffect(() => {
+        if (sosReports.length > 0) {
+            const latestReport = sosReports[0]
+            if (latestReport.id !== lastReportIdRef.current) {
+                setSelectedReportId(latestReport.id)
+                lastReportIdRef.current = latestReport.id
+            }
+        }
+    }, [sosReports])
 
     const stats = getStats()
 
@@ -43,7 +58,7 @@ function AdminDashboard() {
         <div className="admin-dashboard">
             <div className="page-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
-                    {/* <span style={{ fontSize: '2rem' }}>🛡️</span> */}
+                    <span style={{ fontSize: '2rem' }}>🛡️</span>
                     <div>
                         <h1 className="page-title">Admin Control Center</h1>
                         <p className="page-subtitle">
@@ -56,7 +71,7 @@ function AdminDashboard() {
             {/* Stats Cards */}
             <div className="admin-stats">
                 <div className="admin-stat-card urgent">
-                    <div className="stat-icon-large">{/* 🆘 */}</div>
+                    <div className="stat-icon-large">🆘</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.pendingSOS}</div>
                         <div className="stat-label">Pending SOS</div>
@@ -65,7 +80,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-stat-card active">
-                    <div className="stat-icon-large">{/* 🔄 */}</div>
+                    <div className="stat-icon-large">🔄</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.inProgressSOS}</div>
                         <div className="stat-label">In Progress</div>
@@ -73,7 +88,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-stat-card success">
-                    <div className="stat-icon-large">{/* ✓ */}</div>
+                    <div className="stat-icon-large">✅</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.completedSOS}</div>
                         <div className="stat-label">Resolved Today</div>
@@ -81,7 +96,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="admin-stat-card info">
-                    <div className="stat-icon-large">{/* 📋 */}</div>
+                    <div className="stat-icon-large">📋</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.totalCommunity}</div>
                         <div className="stat-label">Community Issues</div>
@@ -122,36 +137,36 @@ function AdminDashboard() {
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        {/* <span>📍</span> */} Live SOS Reports
+                        <span>📍</span> Live SOS Reports
                         <span className="live-indicator"></span>
                     </h3>
 
                     {filteredReports.length === 0 ? (
                         <div className="empty-state">
-                            <span style={{ fontSize: '3rem' }}>{/* ✅ */}</span>
+                            <span style={{ fontSize: '3rem' }}>✅</span>
                             <p>No pending reports</p>
                         </div>
                     ) : (
                         filteredReports.map(report => (
                             <div
                                 key={report.id}
-                                className={`admin-report-card ${report.type} ${selectedReport?.id === report.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedReport(report)}
+                                className={`admin-report-card ${report.type} ${selectedReportId === report.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedReportId(report.id)}
                             >
                                 <div className="report-header">
                                     <div className="report-type-badge" style={{
                                         background: EMERGENCY_SERVICES[report.type]?.gradient
                                     }}>
-                                        {/* {EMERGENCY_SERVICES[report.type]?.icon} */} {EMERGENCY_SERVICES[report.type]?.title}
+                                        {EMERGENCY_SERVICES[report.type]?.icon} {EMERGENCY_SERVICES[report.type]?.title}
                                     </div>
                                     <span className={`status-badge ${report.status}`}>
-                                        {/* {STATUS_CONFIG[report.status]?.icon} */} {STATUS_CONFIG[report.status]?.label}
+                                        {STATUS_CONFIG[report.status]?.icon} {STATUS_CONFIG[report.status]?.label}
                                     </span>
                                 </div>
 
                                 <div className="report-body">
                                     <div className="report-user">
-                                        <span style={{ fontSize: '1.5rem' }}>{/* 👤 */}</span>
+                                        <span style={{ fontSize: '1.5rem' }}>👤</span>
                                         <div>
                                             <div style={{ fontWeight: 600 }}>{report.userName}</div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -161,12 +176,12 @@ function AdminDashboard() {
                                     </div>
 
                                     <div className="report-location">
-                                        <span>{/* 📍 */}</span>
+                                        <span>📍</span>
                                         <span>{report.location?.address || 'Location pending...'}</span>
                                     </div>
 
                                     <div className="report-time">
-                                        <span>{/* 🕐 */}</span>
+                                        <span>🕐</span>
                                         <span>{formatTime(report.timestamp)}</span>
                                     </div>
                                 </div>
@@ -177,19 +192,19 @@ function AdminDashboard() {
                                             className="action-btn police"
                                             onClick={(e) => { e.stopPropagation(); handleAssign(report.id, 'police') }}
                                         >
-                                            {/* 👮 */} Police
+                                            👮 Police
                                         </button>
                                         <button
                                             className="action-btn ambulance"
                                             onClick={(e) => { e.stopPropagation(); handleAssign(report.id, 'ambulance') }}
                                         >
-                                            {/* 🚑 */} Ambulance
+                                            🚑 Ambulance
                                         </button>
                                         <button
                                             className="action-btn fire"
                                             onClick={(e) => { e.stopPropagation(); handleAssign(report.id, 'fire') }}
                                         >
-                                            {/* 🚒 */} Fire
+                                            🚒 Fire
                                         </button>
                                     </div>
                                 )}
@@ -217,10 +232,18 @@ function AdminDashboard() {
                     {selectedReport ? (
                         <>
                             <div className="detail-header">
-                                <h3>Report Details</h3>
+                                <div>
+                                    <h3 style={{ margin: 0 }}>Report Details</h3>
+                                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                        Registered: {new Date(selectedReport.timestamp).toLocaleString(undefined, {
+                                            dateStyle: 'medium',
+                                            timeStyle: 'short'
+                                        })}
+                                    </p>
+                                </div>
                                 <button
                                     className="close-btn"
-                                    onClick={() => setSelectedReport(null)}
+                                    onClick={() => setSelectedReportId(null)}
                                 >
                                     Close
                                 </button>
@@ -235,7 +258,7 @@ function AdminDashboard() {
                                         background: 'var(--bg-glass)',
                                         borderRadius: 'var(--radius-lg)'
                                     }}>
-                                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{/* 🗺️ */}</div>
+                                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🗺️</div>
                                         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
                                             {selectedReport.location?.address}
                                         </p>
@@ -335,7 +358,7 @@ function AdminDashboard() {
                                     <div className="timeline-item completed">
                                         <div className="timeline-dot"></div>
                                         <div className="timeline-content">
-                                            <span>Report Submitted</span>
+                                            <span>Report Submitted  &nbsp;&nbsp;</span>
                                             <span className="timeline-time">{formatTime(selectedReport.timestamp)}</span>
                                         </div>
                                     </div>
@@ -352,7 +375,7 @@ function AdminDashboard() {
                         </>
                     ) : (
                         <div className="detail-empty">
-                            <span style={{ fontSize: '3rem' }}>{/* 👆 */}</span>
+                            <span style={{ fontSize: '3rem' }}>👆</span>
                             <p>Select a report to view details</p>
                         </div>
                     )}

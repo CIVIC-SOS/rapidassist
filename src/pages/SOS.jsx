@@ -196,6 +196,7 @@ function SOS() {
             userId: user?.id || 'anonymous',
             userName: user?.name || 'Anonymous User',
             location: location,
+            timestamp: Date.now(),
             medicalInfo: user ? {
                 bloodGroup: user.bloodGroup || 'Not Specified',
                 conditions: Object.entries(user.medicalConditions || {})
@@ -214,7 +215,6 @@ function SOS() {
             const newEmergencyRef = push(emergencyListRef)
             set(newEmergencyRef, {
                 ...reportData,
-                timestamp: serverTimestamp(),
                 status: 'active'
             })
             firebaseIdRef.current = newEmergencyRef.key

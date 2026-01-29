@@ -1671,3 +1671,426 @@ body::before {
     transform: translateY(0);
   }
 }
+
+/* ===================================
+   ADMIN DASHBOARD PREMIUM UI
+   =================================== */
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.admin-stat-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-icon-large {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  background: var(--bg-tertiary);
+}
+
+.admin-stat-card.urgent .stat-icon-large {
+  background: var(--ambulance-gradient);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.admin-stat-card.active .stat-icon-large {
+  background: var(--police-gradient);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.admin-stat-card.success .stat-icon-large {
+  background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+.admin-stat-card.info .stat-icon-large {
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stat-pulse {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 12px;
+  height: 12px;
+  background: var(--error);
+  border-radius: 50%;
+  animation: urgentPulse 1.5s infinite;
+}
+
+@keyframes urgentPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.admin-filters {
+  background: var(--bg-glass);
+  padding: var(--space-2);
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: var(--space-4);
+}
+
+.filter-btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.filter-btn.active {
+  background: var(--primary-500);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.admin-reports-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: var(--space-6);
+  height: calc(100vh - 350px);
+  min-height: 600px;
+}
+
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  padding-right: var(--space-2);
+}
+
+.reports-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.reports-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.admin-report-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.admin-report-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-report-card.selected {
+  border-color: var(--primary-500);
+  background: rgba(16, 185, 129, 0.05);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.report-type-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-badge.submitted {
+  color: var(--error);
+}
+
+.status-badge.in-progress {
+  color: var(--info);
+}
+
+.status-badge.completed {
+  color: var(--success);
+}
+
+.report-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.report-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.report-location,
+.report-time {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.report-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.action-btn {
+  padding: 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.action-btn.police:hover {
+  color: var(--police-color);
+  border-color: var(--police-color);
+}
+
+.action-btn.ambulance:hover {
+  color: var(--ambulance-color);
+  border-color: var(--ambulance-color);
+}
+
+.action-btn.fire:hover {
+  color: var(--fire-color);
+  border-color: var(--fire-color);
+}
+
+.action-btn.progress {
+  grid-column: span 3;
+  background: var(--primary-500);
+  color: white;
+  border: none;
+}
+
+.report-detail-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  overflow-y: auto;
+  animation: slideInRight 0.4s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-section {
+  margin-bottom: var(--space-8);
+}
+
+.detail-section h4 {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.medical-info {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.blood-badge {
+  background: var(--ambulance-color);
+  color: white;
+  padding: 2px 8px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+}
+
+.condition-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.condition-tag {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+}
+
+.live-indicator {
+  width: 8px;
+  height: 8px;
+  background: var(--error);
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 8px;
+  animation: liveBlink 1s infinite;
+}
+
+@keyframes liveBlink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.detail-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  text-align: center;
+  gap: var(--space-4);
+}
+
+@media (max-width: 1100px) {
+  .admin-reports-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .report-detail-panel {
+    min-height: 500px;
+  }
+}

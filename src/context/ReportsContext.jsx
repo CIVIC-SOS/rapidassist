@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { ref, onValue, query, orderByChild, limitToLast } from 'firebase/database'
+import { database } from '../firebase'
 import { DEMO_SOS_REPORTS, DEMO_COMMUNITY_ISSUES } from '../utils/constants'
 
 const ReportsContext = createContext(null)
@@ -10,18 +12,7 @@ export function ReportsProvider({ children }) {
 
     // Load from localStorage on mount, or use demo data
     useEffect(() => {
-        const savedSOS = localStorage.getItem('rapidAssist_sosReports')
         const savedCommunity = localStorage.getItem('rapidAssist_communityIssues')
-
-        if (savedSOS) {
-            try {
-                setSosReports(JSON.parse(savedSOS))
-            } catch (e) {
-                setSosReports(DEMO_SOS_REPORTS)
-            }
-        } else {
-            setSosReports(DEMO_SOS_REPORTS)
-        }
 
         if (savedCommunity) {
             try {
@@ -34,14 +25,34 @@ export function ReportsProvider({ children }) {
         }
 
         setIsLoading(false)
+
+        // Real-time SOS Sync from Firebase
+        const emergenciesRef = query(
+            ref(database, 'emergencies'),
+            orderByChild('timestamp'),
+            limitToLast(50)
+        )
+
+        const unsubscribe = onValue(emergenciesRef, (snapshot) => {
+            const data = snapshot.val()
+            if (data) {
+                // Convert Firebase object to array and ensure IDs are preserved
+                const firebaseEmergencies = Object.entries(data).map(([id, val]) => ({
+                    id,
+                    ...val,
+                    isLive: true
+                }))
+
+                // Newest first, purely from Firebase
+                setSosReports(firebaseEmergencies.sort((a, b) =>
+                    new Date(b.timestamp) - new Date(a.timestamp)
+                ))
+            }
+        })
+
+        return () => unsubscribe()
     }, [])
 
-    // Persist SOS reports
-    useEffect(() => {
-        if (!isLoading) {
-            localStorage.setItem('rapidAssist_sosReports', JSON.stringify(sosReports))
-        }
-    }, [sosReports, isLoading])
 
     // Persist community issues
     useEffect(() => {
@@ -54,8 +65,8 @@ export function ReportsProvider({ children }) {
     const createSOSReport = async (reportData) => {
         const newReport = {
             id: `sos-${Date.now()}`,
+            timestamp: Date.now(),
             status: 'submitted',
-            timestamp: new Date().toISOString(),
             ...reportData
         }
 
