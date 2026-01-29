@@ -21,8 +21,7 @@ function Header() {
         <header className="header">
             <div className="header-container">
                 <Link to="/" className="logo" onClick={closeMobileMenu}>
-                    <span className="logo-icon">🆘</span>
-                    <span className="logo-text">Rapid<span>Assist</span></span>
+                    <img src="/logo.png" alt="Rapid Assist Logo" className="logo-img" />
                 </Link>
 
                 <nav className={`nav ${showMobileMenu ? 'mobile-open' : ''}`}>

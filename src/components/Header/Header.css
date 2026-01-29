@@ -20,22 +20,13 @@
 .logo {
     display: flex;
     align-items: center;
-    gap: 8px;
     text-decoration: none;
-    font-size: 1.4rem;
-    font-weight: 700;
 }
 
-.logo-icon {
-    font-size: 1.6rem;
-}
-
-.logo-text {
-    color: #e2e8f0;
-}
-
-.logo-text span {
-    color: #10b981;
+.logo-img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
 }
 
 .nav {

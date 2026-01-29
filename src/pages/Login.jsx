@@ -335,7 +335,7 @@ function Login() {
                 ) : (
                     <>
                         <button
-                            className="back-button"
+                            className="btn btn-secondary w-full mb-6"
                             onClick={() => {
                                 setLoginMethod(null)
                                 setOtpSent(false)
