@@ -1,0 +1,16 @@
+{
+    "short_name": "RapidAssist",
+    "name": "Rapid Assist - Emergency Response",
+    "icons": [
+        {
+            "src": "logo_pwa.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#10b981",
+    "background_color": "#0a0a0f"
+}

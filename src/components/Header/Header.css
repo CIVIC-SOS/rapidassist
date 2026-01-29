@@ -1,0 +1,347 @@
+/* Header Component Styles */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 15, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.logo-icon {
+    font-size: 1.6rem;
+}
+
+.logo-text {
+    color: #e2e8f0;
+}
+
+.logo-text span {
+    color: #10b981;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    color: #94a3b8;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+}
+
+.nav-link.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.admin-link.active {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-menu-container {
+    position: relative;
+}
+
+.user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.user-menu-trigger:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.user-name {
+    color: #e2e8f0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.dropdown-arrow {
+    color: #64748b;
+    font-size: 0.6rem;
+}
+
+.menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: rgba(25, 25, 35, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 4px;
+}
+
+.dropdown-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.dropdown-name {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.dropdown-type {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 4px 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+}
+
+.dropdown-item.logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.btn-outline {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    border-radius: 8px;
+    color: #10b981;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+}
+
+.sos-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.sos-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+}
+
+.sos-pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.5);
+    animation: sosPulse 2s infinite;
+    z-index: -1;
+}
+
+@keyframes sosPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+}
+
+.mobile-menu-toggle {
+    display: none;
+    padding: 8px;
+    background: none;
+    border: none;
+    color: #e2e8f0;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    .nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 15, 0.98);
+        flex-direction: column;
+        padding: 20px;
+        gap: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+    }
+
+    .nav.mobile-open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .nav-link {
+        width: 100%;
+        justify-content: center;
+        padding: 14px;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .header-container {
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-outline {
+        display: none;
+    }
+
+    .logo-text {
+        display: none;
+    }
+
+    .sos-link span:last-child {
+        display: none;
+    }
+}
