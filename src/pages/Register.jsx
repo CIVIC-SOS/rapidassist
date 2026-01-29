@@ -104,17 +104,8 @@ function Register() {
         setStep(step - 1)
     }
 
-    const handleEnterPrevent = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault()
-        }
-    }
-
-    const handleSubmit = async () => {
-        if (step < 4) {
-            nextStep()
-            return
-        }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
 
         if (!validateStep(step)) return
 
@@ -170,7 +161,7 @@ function Register() {
                 ))}
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="register-form">
+            <form onSubmit={handleSubmit} className="register-form">
                 {/* Step 1: Personal Information */}
                 {step === 1 && (
                     <div className="register-section animate-in">
@@ -376,7 +367,6 @@ function Register() {
                                         placeholder="Name"
                                         value={contact.name}
                                         onChange={(e) => handleContactChange(index, 'name', e.target.value)}
-                                        onKeyDown={handleEnterPrevent}
                                     />
                                     <input
                                         type="tel"
@@ -385,13 +375,11 @@ function Register() {
                                         value={contact.phone}
                                         onChange={(e) => handleContactChange(index, 'phone', e.target.value)}
                                         maxLength={10}
-                                        onKeyDown={handleEnterPrevent}
                                     />
                                     <select
                                         className="form-input form-select"
                                         value={contact.relation}
                                         onChange={(e) => handleContactChange(index, 'relation', e.target.value)}
-                                        onKeyDown={handleEnterPrevent}
                                     >
                                         <option value="">Relation</option>
                                         <option value="Parent">Parent</option>
@@ -423,7 +411,7 @@ function Register() {
                             Next →
                         </button>
                     ) : (
-                        <button type="button" className="btn btn-primary btn-lg" disabled={isLoading} onClick={handleSubmit}>
+                        <button type="submit" className="btn btn-primary btn-lg" disabled={isLoading}>
                             {isLoading ? '⏳ Creating Account...' : '🎉 Complete Registration'}
                         </button>
                     )}

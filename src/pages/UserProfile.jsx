@@ -364,7 +364,7 @@ function UserProfile() {
                 <div className="reports-tabs">
                     <div className="reports-summary">
                         <div className="summary-card">
-                            <span className="summary-icon">🛡️</span>
+                            <span className="summary-icon">🆘</span>
                             <div>
                                 <div className="summary-number">{userReports.sos.length}</div>
                                 <div className="summary-label">SOS Alerts</div>

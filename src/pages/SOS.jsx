@@ -200,9 +200,7 @@ function SOS() {
 
         try {
             await createSOSReport(reportData)
-            toast.success('Emergency alert sent! Help is on the way.')
-
-            // Simulate notification to emergency contacts
+            toast.success('🆘 Emergency alert sent! Help is on the way.')
             if (user?.contacts?.length > 0) {
                 setTimeout(() => {
                     toast.info(`📱 ${user.contacts.length} emergency contacts notified`)
@@ -239,7 +237,7 @@ function SOS() {
         <div className="sos-page">
             <div className="page-header">
                 <h1 className="page-title" style={{ color: 'var(--error)' }}>
-                    Emergency SOS
+                    🆘 Emergency SOS
                 </h1>
                 <p className="page-subtitle">
                     Instantly alert emergency services. Your location will be shared automatically.
@@ -251,6 +249,7 @@ function SOS() {
                     {!isActivated ? (
                         <>
                             <button className="sos-button" onClick={handleActivate}>
+                                <span className="sos-button-icon">🆘</span>
                                 <span>SOS</span>
                             </button>
 

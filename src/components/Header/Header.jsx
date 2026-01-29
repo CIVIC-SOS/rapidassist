@@ -20,8 +20,9 @@ function Header() {
     return (
         <header className="header">
             <div className="header-container">
-                <Link to="/" className="logo-link" onClick={closeMobileMenu}>
-                    <img src="/logo.png" alt="Rapid Assist Logo" className="header-logo" />
+                <Link to="/" className="logo" onClick={closeMobileMenu}>
+                    <span className="logo-icon">🆘</span>
+                    <span className="logo-text">Rapid<span>Assist</span></span>
                 </Link>
 
                 <nav className={`nav ${showMobileMenu ? 'mobile-open' : ''}`}>
@@ -133,14 +134,6 @@ function Header() {
                         </Link>
                     )}
 
-                    <Link
-                        to="/sos"
-                        className="sos-link"
-                        onClick={closeMobileMenu}
-                    >
-                        <span className="sos-pulse"></span>
-                        SOS
-                    </Link>
 
                     <button
                         className="mobile-menu-toggle"

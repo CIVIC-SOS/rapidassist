@@ -390,21 +390,8 @@ body::before {
   background: var(--police-gradient);
 }
 
-.emergency-card.police::before {
-  background: var(--police-gradient);
-}
-
 .emergency-card.ambulance::before {
   background: var(--ambulance-gradient);
-}
-
-.emergency-card.fire::before {
-  background: var(--fire-gradient);
-}
-
-.emergency-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-xl);
 }
 
 .emergency-card.fire::before {
@@ -540,11 +527,6 @@ body::before {
   background-position: right 1rem center;
   background-size: 1rem;
   padding-right: var(--space-10);
-}
-
-.form-select option {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
 }
 
 .form-checkbox-group {

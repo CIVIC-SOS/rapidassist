@@ -17,17 +17,25 @@
     align-items: center;
 }
 
-.logo-link {
+.logo {
     display: flex;
     align-items: center;
+    gap: 8px;
     text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: 700;
 }
 
-.header-logo {
-    height: 32px;
-    width: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
+.logo-icon {
+    font-size: 1.6rem;
+}
+
+.logo-text {
+    color: #e2e8f0;
+}
+
+.logo-text span {
+    color: #10b981;
 }
 
 .nav {

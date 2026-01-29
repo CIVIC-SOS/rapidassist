@@ -34,7 +34,7 @@ function Home() {
 
                 <div className="hero-actions">
                     <Link to="/sos" className="btn btn-danger btn-lg">
-                        Emergency SOS
+                        🆘 Emergency SOS
                     </Link>
                     <Link to="/report" className="btn btn-primary btn-lg">
                         📝 Report an Issue

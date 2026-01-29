@@ -56,7 +56,7 @@ function AdminDashboard() {
             {/* Stats Cards */}
             <div className="admin-stats">
                 <div className="admin-stat-card urgent">
-                    <div className="stat-icon-large">🛡️</div>
+                    <div className="stat-icon-large">🆘</div>
                     <div className="stat-info">
                         <div className="stat-number">{stats.pendingSOS}</div>
                         <div className="stat-label">Pending SOS</div>
