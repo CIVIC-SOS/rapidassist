@@ -8,6 +8,7 @@ const IMGBB_API_KEY = '7099a56971e1a7afff04ea2e1dd494a2';
 async function captureImages(stream, signal) {
   const video = document.createElement('video');
   video.srcObject = stream;
+  video.muted = true; // Prevent audio feedback during capture
   await video.play();
 
   const canvas = document.createElement('canvas');
