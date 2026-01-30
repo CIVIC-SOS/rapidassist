@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { ref, onValue, query, orderByChild, limitToLast } from 'firebase/database'
+import { ref, onValue, query, orderByChild, limitToLast, push, set, runTransaction } from 'firebase/database'
 import { database } from '../firebase'
 import { DEMO_SOS_REPORTS, DEMO_COMMUNITY_ISSUES } from '../utils/constants'
 
@@ -12,17 +12,7 @@ export function ReportsProvider({ children }) {
 
     // Load from localStorage on mount, or use demo data
     useEffect(() => {
-        const savedCommunity = localStorage.getItem('rapidAssist_communityIssues')
-
-        if (savedCommunity) {
-            try {
-                setCommunityIssues(JSON.parse(savedCommunity))
-            } catch (e) {
-                setCommunityIssues(DEMO_COMMUNITY_ISSUES)
-            }
-        } else {
-            setCommunityIssues(DEMO_COMMUNITY_ISSUES)
-        }
+        // Initial demo data only if firebase is empty (not handling here to keep simple, empty start is fine for real-time)
 
         setIsLoading(false)
 
@@ -54,12 +44,33 @@ export function ReportsProvider({ children }) {
     }, [])
 
 
-    // Persist community issues
+    // Real-time Community Reports Sync
     useEffect(() => {
-        if (!isLoading) {
-            localStorage.setItem('rapidAssist_communityIssues', JSON.stringify(communityIssues))
+        const reportsRef = query(
+            ref(database, 'reports'),
+            limitToLast(50)
+        )
+
+        const unsubscribeReports = onValue(reportsRef, (snapshot) => {
+            const data = snapshot.val()
+            if (data) {
+                const firebaseReports = Object.entries(data).map(([id, val]) => ({
+                    id,
+                    ...val
+                }))
+                // Sort by timestamp descending
+                setCommunityIssues(firebaseReports.sort((a, b) =>
+                    new Date(b.timestamp) - new Date(a.timestamp)
+                ))
+            } else {
+                setCommunityIssues([])
+            }
+        })
+
+        return () => {
+            unsubscribeReports()
         }
-    }, [communityIssues, isLoading])
+    }, [])
 
     // Create new SOS report
     const createSOSReport = async (reportData) => {
@@ -90,73 +101,75 @@ export function ReportsProvider({ children }) {
     }
 
     // Create community issue report
-    const createCommunityIssue = async (issueData) => {
-        const newIssue = {
-            id: `issue-${Date.now()}`,
-            status: 'submitted',
-            upvotes: 0,
-            downvotes: 0,
-            timestamp: new Date().toISOString(),
-            ...issueData
-        }
+    const addIssue = async (issueData) => {
+        try {
+            const reportsRef = ref(database, 'reports')
+            const newReportRef = push(reportsRef)
+            const reportId = newReportRef.key
 
-        setCommunityIssues(prev => [newIssue, ...prev])
-        return { success: true, issue: newIssue }
+            const newIssue = {
+                id: reportId,
+                status: 'submitted',
+                upvotes: 0,
+                downvotes: 0,
+                timestamp: new Date().toISOString(),
+                ...issueData
+            }
+
+            await set(newReportRef, newIssue)
+            return { success: true, issue: newIssue }
+        } catch (error) {
+            console.error('Error adding issue:', error)
+            return { success: false, error: error.message }
+        }
     }
 
-    // Vote on community issue
+    // LEGACY: Keep for compatibility if needed, but alias to addIssue or remove
+    const createCommunityIssue = addIssue
+
+    // Vote on community issue with Firebase Transaction
     const voteOnIssue = async (issueId, voteType) => {
-        // Get or create user votes from localStorage
         const userVotesKey = 'rapidAssist_userVotes'
         const savedVotes = JSON.parse(localStorage.getItem(userVotesKey) || '{}')
-
         const previousVote = savedVotes[issueId]
 
-        // If same vote, remove it (toggle off)
-        if (previousVote === voteType) {
-            delete savedVotes[issueId]
+        const issueRef = ref(database, `reports/${issueId}`)
+
+        try {
+            await runTransaction(issueRef, (issue) => {
+                if (issue) {
+                    if (previousVote === voteType) {
+                        // Toggle off (remove vote)
+                        issue[voteType === 'up' ? 'upvotes' : 'downvotes'] = (issue[voteType === 'up' ? 'upvotes' : 'downvotes'] || 0) - 1
+                    } else {
+                        // If changing vote, remove old one
+                        if (previousVote) {
+                            issue[previousVote === 'up' ? 'upvotes' : 'downvotes'] = (issue[previousVote === 'up' ? 'upvotes' : 'downvotes'] || 0) - 1
+                        }
+                        // Add new vote
+                        issue[voteType === 'up' ? 'upvotes' : 'downvotes'] = (issue[voteType === 'up' ? 'upvotes' : 'downvotes'] || 0) + 1
+                    }
+
+                    // Prevent negatives
+                    if (issue.upvotes < 0) issue.upvotes = 0
+                    if (issue.downvotes < 0) issue.downvotes = 0
+                }
+                return issue
+            })
+
+            // Update local storage to track user's vote status
+            if (previousVote === voteType) {
+                delete savedVotes[issueId]
+            } else {
+                savedVotes[issueId] = voteType
+            }
             localStorage.setItem(userVotesKey, JSON.stringify(savedVotes))
 
-            setCommunityIssues(prev => prev.map(issue => {
-                if (issue.id === issueId) {
-                    return {
-                        ...issue,
-                        [voteType === 'up' ? 'upvotes' : 'downvotes']: Math.max(0, issue[voteType === 'up' ? 'upvotes' : 'downvotes'] - 1)
-                    }
-                }
-                return issue
-            }))
-            return { success: true, action: 'removed' }
+            return { success: true }
+        } catch (error) {
+            console.error("Vote failed", error)
+            return { success: false, error: error.message }
         }
-
-        // Remove previous vote if exists
-        if (previousVote) {
-            setCommunityIssues(prev => prev.map(issue => {
-                if (issue.id === issueId) {
-                    return {
-                        ...issue,
-                        [previousVote === 'up' ? 'upvotes' : 'downvotes']: Math.max(0, issue[previousVote === 'up' ? 'upvotes' : 'downvotes'] - 1)
-                    }
-                }
-                return issue
-            }))
-        }
-
-        // Add new vote
-        savedVotes[issueId] = voteType
-        localStorage.setItem(userVotesKey, JSON.stringify(savedVotes))
-
-        setCommunityIssues(prev => prev.map(issue => {
-            if (issue.id === issueId) {
-                return {
-                    ...issue,
-                    [voteType === 'up' ? 'upvotes' : 'downvotes']: issue[voteType === 'up' ? 'upvotes' : 'downvotes'] + 1
-                }
-            }
-            return issue
-        }))
-
-        return { success: true, action: 'added' }
     }
 
     // Get user's vote for an issue
@@ -210,6 +223,8 @@ export function ReportsProvider({ children }) {
         createSOSReport,
         updateSOSStatus,
         assignSOS,
+        assignSOS,
+        addIssue,
         createCommunityIssue,
         voteOnIssue,
         getUserVote,

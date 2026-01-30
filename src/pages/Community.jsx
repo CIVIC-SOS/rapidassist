@@ -31,9 +31,10 @@ function Community() {
     ]
 
     const statusLabels = {
-        completed: { label: 'Completed', icon: '✓', class: 'completed' },
-        submitted: { label: 'Pending', icon: '⏳', class: 'pending' },
-        'in-progress': { label: 'In Progress', icon: '🔄', class: 'in-progress' }
+        completed: { label: 'RESOLVED', icon: '✅', color: '#10b981', bg: '#ecfdf5' },
+        'in-progress': { label: 'IN PROGRESS', icon: '🚧', color: '#3b82f6', bg: '#eff6ff' },
+        rejected: { label: 'REJECTED', icon: '❌', color: '#ef4444', bg: '#fef2f2' },
+        submitted: { label: 'PENDING REVIEW', icon: '⏳', color: '#f59e0b', bg: '#fffbeb' }
     }
 
     const formatTime = (timestamp) => {
@@ -123,52 +124,186 @@ function Community() {
                                 key={issue.id}
                                 className="issue-card"
                                 onClick={() => setSelectedIssue(issue)}
+                                style={{
+                                    background: 'var(--bg-card)',
+                                    borderRadius: '16px',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                    border: '1px solid var(--neutral-800)',
+                                    backdropFilter: 'blur(10px)',
+                                    cursor: 'pointer'
+                                }}
+                                onMouseOver={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)'
+                                    e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.4)'
+                                    e.currentTarget.style.border = '1px solid var(--primary-500)'
+                                }}
+                                onMouseOut={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)'
+                                    e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+                                    e.currentTarget.style.border = '1px solid var(--neutral-800)'
+                                }}
                             >
-                                {issue.image && (
-                                    <div
-                                        className="issue-image"
-                                        style={{ backgroundImage: `url(${issue.image})` }}
-                                    >
-                                        <span className={`issue-status ${statusInfo.class}`}>
-                                            {statusInfo.label}
+                                {/* Card Image Header */}
+                                <div style={{
+                                    height: '200px',
+                                    background: issue.image ? `url(${issue.image}) center/cover` : 'var(--neutral-800)',
+                                    position: 'relative',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderBottom: '1px solid var(--neutral-800)'
+                                }}>
+                                    {!issue.image && <span style={{ fontSize: '3rem', opacity: 0.3 }}>📷</span>}
+
+                                    {/* Status Badge Overlay */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '12px',
+                                        right: '12px',
+                                        background: statusInfo.bg,
+                                        color: statusInfo.color,
+                                        padding: '6px 12px',
+                                        borderRadius: '20px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 700,
+                                        letterSpacing: '0.05em',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                    }}>
+                                        <span>{statusInfo.icon}</span>
+                                        {statusInfo.label}
+                                    </div>
+                                </div>
+
+                                <div style={{ padding: '1.5rem' }}>
+                                    {/* Author & Header */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '50%',
+                                            background: 'var(--neutral-700)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '1rem',
+                                            fontWeight: 600,
+                                            color: 'var(--text-primary)'
+                                        }}>
+                                            {issue.userName?.charAt(0) || 'A'}
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>{issue.userName || 'Anonymous'}</span>
+                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{formatTime(issue.timestamp)}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Content */}
+                                    <h3 style={{
+                                        margin: '0 0 0.5rem 0',
+                                        fontSize: '1.125rem',
+                                        fontWeight: 700,
+                                        color: 'var(--text-primary)',
+                                        lineHeight: 1.4
+                                    }}>
+                                        {issue.title}
+                                    </h3>
+
+                                    <p style={{
+                                        margin: '0 0 1rem 0',
+                                        fontSize: '0.925rem',
+                                        color: 'var(--text-secondary)',
+                                        lineHeight: 1.5,
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden'
+                                    }}>
+                                        {issue.description}
+                                    </p>
+
+                                    {/* Meta Tags */}
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '1.5rem' }}>
+                                        <span style={{
+                                            background: 'var(--neutral-800)',
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 500,
+                                            color: 'var(--text-muted)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            border: '1px solid var(--neutral-700)'
+                                        }}>
+                                            🏢 {issue.category}
+                                        </span>
+                                        <span style={{
+                                            background: 'var(--neutral-800)',
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 500,
+                                            color: 'var(--text-muted)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            border: '1px solid var(--neutral-700)'
+                                        }}>
+                                            📍 {issue.location?.slice(0, 20)}...
                                         </span>
                                     </div>
-                                )}
 
-                                <div className="issue-content">
-                                    <div className="issue-meta">
-                                        <span className="issue-category">{issue.category}</span>
-                                        <span className="issue-time">{formatTime(issue.timestamp)}</span>
-                                    </div>
-
-                                    <h3 className="issue-title">{issue.title}</h3>
-                                    <p className="issue-description">{issue.description}</p>
-
-                                    <div className="issue-location">
-                                        <span></span>
-                                        <span>{issue.location}</span>
-                                    </div>
-
-                                    <div className="issue-footer">
-                                        <div className="issue-reporter">
-                                            <span className="reporter-avatar">{issue.userName?.charAt(0)}</span>
-                                            <span>{issue.userName}</span>
-                                        </div>
-
-                                        <div className="vote-buttons">
+                                    {/* Action Footer */}
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        paddingTop: '1rem',
+                                        borderTop: '1px solid var(--neutral-800)'
+                                    }}>
+                                        <div style={{ display: 'flex', gap: '12px' }}>
                                             <button
-                                                className={`vote-btn upvote ${userVote === 'up' ? 'active' : ''}`}
                                                 onClick={(e) => handleVote(issue.id, 'up', e)}
+                                                style={{
+                                                    background: userVote === 'up' ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                                                    border: userVote === 'up' ? '1px solid rgba(59, 130, 246, 0.5)' : '1px solid transparent',
+                                                    color: userVote === 'up' ? '#60a5fa' : 'var(--text-muted)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    cursor: 'pointer',
+                                                    padding: '6px 10px',
+                                                    borderRadius: '6px',
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: 500,
+                                                    transition: 'all 0.2s'
+                                                }}
                                             >
-                                                <span></span>
-                                                <span>👍 {issue.upvotes}</span>
+                                                <span>👍</span> {issue.upvotes || 0}
                                             </button>
                                             <button
-                                                className={`vote-btn downvote ${userVote === 'down' ? 'active' : ''}`}
                                                 onClick={(e) => handleVote(issue.id, 'down', e)}
+                                                style={{
+                                                    background: userVote === 'down' ? 'rgba(239, 68, 68, 0.2)' : 'transparent',
+                                                    border: userVote === 'down' ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid transparent',
+                                                    color: userVote === 'down' ? '#f87171' : 'var(--text-muted)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    cursor: 'pointer',
+                                                    padding: '6px 10px',
+                                                    borderRadius: '6px',
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: 500,
+                                                    transition: 'all 0.2s'
+                                                }}
                                             >
-                                                <span></span>
-                                                <span>👎 {issue.downvotes}</span>
+                                                <span>👎</span> {issue.downvotes || 0}
                                             </button>
                                         </div>
                                     </div>

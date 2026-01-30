@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext'
 import CivicIssueAnalyzer from '../utils/civicAnalyzer'
 
 
-function ReportIssue() {
+function ReportIssue({ userId: propUserId }) {
     const navigate = useNavigate()
     const { user, isAuthenticated } = useAuth()
     const { addIssue } = useReports()
@@ -64,7 +64,7 @@ function ReportIssue() {
                 streamRef.current.getTracks().forEach(track => track.stop())
                 streamRef.current = null
             }
-            
+
             const mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
                 audio: false
@@ -177,7 +177,7 @@ function ReportIssue() {
 
         const imageData = canvas.toDataURL('image/jpeg')
         setCapturedImage(imageData)
-        
+
         // Stop camera immediately after capture
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop())
@@ -187,7 +187,7 @@ function ReportIssue() {
             videoRef.current.srcObject = null
             videoRef.current.load()
         }
-        
+
         setStep('preview')
     }
 
@@ -235,13 +235,13 @@ function ReportIssue() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        
+
         // Ensure camera is stopped before submission
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop())
             streamRef.current = null
         }
-        
+
         if (!isAuthenticated) {
             warning('Please login to report an issue')
             navigate('/login')
@@ -251,17 +251,17 @@ function ReportIssue() {
         const newIssue = {
             ...formData,
             image: uploadedUrl || capturedImage,
-            reporterId: user.id,
+            reporterId: propUserId || user?.id,
             reporterName: user.name,
-            status: 'pending',
-            timestamp: Date.now(),
+            status: 'submitted',
+            timestamp: new Date().toISOString(),
             upvotes: 0,
             downvotes: 0
         }
 
-        addIssue(newIssue)
+        await addIssue(newIssue)
         success('Report submitted successfully!')
-        navigate('/dashboard')
+        navigate('/community')
     }
 
     return (

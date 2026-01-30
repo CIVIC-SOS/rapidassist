@@ -9,7 +9,7 @@ import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
 import { database } from '../firebase'
 import { ref, push, set, serverTimestamp } from 'firebase/database'
 
-function SOS() {
+function SOS({ userId: propUserId }) {
     const { user, isAuthenticated } = useAuth()
     const { createSOSReport } = useReports()
     const toast = useToast()
@@ -193,7 +193,7 @@ function SOS() {
         const reportData = {
             type: selectedService === 'all' ? 'ambulance' : selectedService,
             target: selectedTarget,
-            userId: user?.id || 'anonymous',
+            userId: propUserId || user?.id || 'anonymous',
             userName: user?.name || 'Anonymous User',
             location: location,
             timestamp: Date.now(),

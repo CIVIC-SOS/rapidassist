@@ -60,7 +60,8 @@ function AuthRoute({ children }) {
 }
 
 function AppContent() {
-    const { isAdmin } = useAuth()
+    const { isAdmin, user } = useAuth()
+    const userId = user?.id
 
     return (
         <div className="app">
@@ -80,14 +81,14 @@ function AppContent() {
                     } />
 
                     {/* SOS - available to all but more features when logged in */}
-                    <Route path="/sos" element={<SOS />} />
+                    <Route path="/sos" element={<SOS userId={userId} />} />
 
                     {/* Protected Routes - requires login */}
                     <Route path="/dashboard" element={
                         <ProtectedRoute><Dashboard /></ProtectedRoute>
                     } />
                     <Route path="/report" element={
-                        <ProtectedRoute><ReportIssue /></ProtectedRoute>
+                        <ProtectedRoute><ReportIssue userId={userId} /></ProtectedRoute>
                     } />
                     <Route path="/profile" element={
                         <ProtectedRoute><UserProfile /></ProtectedRoute>

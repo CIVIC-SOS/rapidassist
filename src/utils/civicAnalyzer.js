@@ -115,6 +115,62 @@ Return exactly this JSON structure:
   }
 
   /**
+   * Generates a concise emergency summary for a user based on their profile data.
+   */
+  static async generateUserSummary(userData) {
+    console.log('🔑 API Key Present:', !!GEMINI_API_KEY && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE')
+
+    if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+      console.warn('Gemini API key not configured.');
+      return 'Emergency summary unavailable (AI Key missing).';
+    }
+
+    const prompt = `
+      Create a concise (2-3 lines) emergency medical summary for a first responder.
+      
+      Part 1: Summarize critical medical conditions, allergies, and blood type.
+      Part 2: Predict ONE critical complication this person might face in a severe accident based on their data (e.g., "Risk of excessive bleeding due to..." or "Airway compromise risk due to...").
+
+      User Data:
+      Name: ${userData.fullName}
+      Age: ${new Date().getFullYear() - new Date(userData.dob).getFullYear()}
+      Blood Group: ${userData.bloodGroup}
+      Medical Conditions: ${Object.entries(userData.medicalConditions || {})
+        .filter(([_, exists]) => exists)
+        .map(([condition]) => condition)
+        .join(', ') || 'None'}
+      Allergies: ${userData.allergies || 'None'}
+      
+      Output format: Plain text, urgent tone, no markdown formatting.
+    `;
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.2,
+              maxOutputTokens: 100
+            }
+          })
+        }
+      );
+
+      const result = await response.json();
+      const summary = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      return summary || 'Emergency summary generation failed.';
+    } catch (error) {
+      console.error('AI Summary Generation Failed:', error);
+      return 'Emergency summary unavailable.';
+    }
+  }
+
+  /**
    * Complete pipeline - Image Data → Enhanced Issue Object
    * Optimized for Gemini Free Tier (Single Call)
    */

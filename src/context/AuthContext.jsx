@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { ref, set } from 'firebase/database'
+import { database } from '../firebase'
 import { DEMO_USERS } from '../utils/constants'
 
 const AuthContext = createContext(null)
@@ -97,17 +99,29 @@ export function AuthProvider({ children }) {
 
     // Register new user
     const register = async (userData) => {
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        try {
+            const userId = `citizen-${Date.now()}`
+            const newUser = {
+                id: userId,
+                type: 'citizen',
+                ...userData,
+                createdAt: new Date().toISOString()
+            }
 
-        const newUser = {
-            id: `citizen-${Date.now()}`,
-            type: 'citizen',
-            ...userData,
-            createdAt: new Date().toISOString()
+            // Save to Firebase RTDB
+            const userRef = ref(database, `users/${userId}`)
+            await set(userRef, {
+                ...newUser,
+                // Don't store the password if it's passed here (though it shouldn't be)
+                password: null
+            })
+
+            setUser(newUser)
+            return { success: true, user: newUser }
+        } catch (error) {
+            console.error('Registration Error:', error)
+            return { success: false, error: error.message }
         }
-
-        setUser(newUser)
-        return { success: true, user: newUser }
     }
 
     // Update user profile
@@ -121,6 +135,7 @@ export function AuthProvider({ children }) {
 
     // Logout
     const logout = () => {
+        localStorage.removeItem('rapidAssist_user')
         setUser(null)
     }
 

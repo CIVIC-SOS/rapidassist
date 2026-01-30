@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { BLOOD_GROUPS, MEDICAL_CONDITIONS } from '../utils/constants'
+import CivicIssueAnalyzer from '../utils/civicAnalyzer'
 
 function Register() {
     const navigate = useNavigate()
@@ -17,8 +18,6 @@ function Register() {
         dob: '',
         gender: '',
         bloodGroup: '',
-        password: '',
-        confirmPassword: '',
         medicalConditions: {},
         allergies: '',
         contacts: [{ name: '', phone: '', relation: '' }]
@@ -74,22 +73,8 @@ function Register() {
                 }
                 return true
             case 2:
-                if (!formData.password || !formData.confirmPassword) {
-                    toast.error('Please enter a password')
-                    return false
-                }
-                if (formData.password !== formData.confirmPassword) {
-                    toast.error('Passwords do not match')
-                    return false
-                }
-                if (formData.password.length < 6) {
-                    toast.error('Password must be at least 6 characters')
-                    return false
-                }
-                return true
-            case 3:
                 return true // Medical info is optional
-            case 4:
+            case 3:
                 // Ensure at least one contact has both name and phone if they try to submit
                 const validContacts = formData.contacts.filter(c => c.name && c.phone)
                 if (validContacts.length === 0) {
@@ -119,6 +104,22 @@ function Register() {
 
         setIsLoading(true)
 
+        // Generate AI Emergency Summary
+        let emergencySummary = 'No emergency summary available.'
+        try {
+            console.log('🤖 Generating summary for:', formData.fullName)
+            emergencySummary = await CivicIssueAnalyzer.generateUserSummary({
+                fullName: formData.fullName,
+                dob: formData.dob,
+                bloodGroup: formData.bloodGroup,
+                medicalConditions: formData.medicalConditions,
+                allergies: formData.allergies
+            })
+            console.log('✅ AI Summary Generated:', emergencySummary)
+        } catch (err) {
+            console.error('❌ Failed to generate summary:', err)
+        }
+
         const result = await register({
             name: formData.fullName,
             mobile: formData.mobile,
@@ -127,7 +128,8 @@ function Register() {
             bloodGroup: formData.bloodGroup,
             medicalConditions: formData.medicalConditions,
             allergies: formData.allergies,
-            contacts: formData.contacts.filter(c => c.name && c.phone)
+            contacts: formData.contacts.filter(c => c.name && c.phone),
+            emergencySummary // Save the AI generated summary
         })
 
         setIsLoading(false)
@@ -153,9 +155,8 @@ function Register() {
             <div className="register-progress">
                 {[
                     { num: 1, label: 'Personal' },
-                    { num: 2, label: 'Security' },
-                    { num: 3, label: 'Medical' },
-                    { num: 4, label: 'Contacts' }
+                    { num: 2, label: 'Medical' },
+                    { num: 3, label: 'Contacts' }
                 ].map((s) => (
                     <div
                         key={s.num}
@@ -245,45 +246,8 @@ function Register() {
                     </div>
                 )}
 
-                {/* Step 2: Security */}
+                {/* Step 2: Medical Information */}
                 {step === 2 && (
-                    <div className="register-section animate-in">
-                        <h3 className="section-title">
-                            Create Password
-                        </h3>
-
-                        <div className="form-group">
-                            <label className="form-label">Password *</label>
-                            <input
-                                type="password"
-                                name="password"
-                                className="form-input"
-                                placeholder="Create a strong password"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                minLength={6}
-                                required
-                            />
-                            <div className="input-hint">Minimum 6 characters</div>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label">Confirm Password *</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                className="form-input"
-                                placeholder="Confirm your password"
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 3: Medical Information */}
-                {step === 3 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
                             Medical Information
@@ -344,8 +308,8 @@ function Register() {
                     </div>
                 )}
 
-                {/* Step 4: Emergency Contacts */}
-                {step === 4 && (
+                {/* Step 3: Emergency Contacts */}
+                {step === 3 && (
                     <div className="register-section animate-in">
                         <h3 className="section-title">
                             Emergency Contacts
@@ -418,7 +382,7 @@ function Register() {
                         </button>
                     )}
 
-                    {step < 4 ? (
+                    {step < 3 ? (
                         <button type="button" className="btn btn-primary" onClick={nextStep}>
                             Next →
                         </button>

@@ -183,6 +183,27 @@ function UserProfile() {
                     )}
                 </div>
 
+                {/* AI Emergency Summary */}
+                {user.emergencySummary && (
+                    <div className="profile-section" style={{ borderLeft: '4px solid #ef4444' }}>
+                        <h3 className="section-title" style={{ color: '#ef4444' }}>
+                            <span>🚑</span> Emergency Note (AI Generated)
+                        </h3>
+                        <p style={{
+                            fontSize: '1.1rem',
+                            lineHeight: '1.6',
+                            fontWeight: 500,
+                            color: 'var(--text-primary)',
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            padding: '1rem',
+                            borderRadius: '8px',
+                            marginBottom: 0
+                        }}>
+                            {user.emergencySummary}
+                        </p>
+                    </div>
+                )}
+
                 {/* Medical Information */}
                 <div className="profile-section">
                     <h3 className="section-title">
