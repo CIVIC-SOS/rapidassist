@@ -223,7 +223,6 @@ export function ReportsProvider({ children }) {
         createSOSReport,
         updateSOSStatus,
         assignSOS,
-        assignSOS,
         addIssue,
         createCommunityIssue,
         voteOnIssue,
