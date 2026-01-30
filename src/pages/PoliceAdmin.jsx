@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useReports } from '../context/ReportsContext'
 import { useToast } from '../context/ToastContext'
 import AudioEvidencePlayer from '../components/AudioEvidencePlayer'
+import LocationMap from '../components/LocationMap/LocationMap'
 import { useAuth } from '../context/AuthContext'
 import { EMERGENCY_SERVICES, STATUS_CONFIG } from '../utils/constants'
 
@@ -246,23 +247,12 @@ function PoliceAdmin() {
 
                             <div className="detail-section">
                                 <h4>📍 Location</h4>
-                                <div className="map-placeholder">
-                                    <div style={{
-                                        textAlign: 'center',
-                                        padding: '2rem',
-                                        background: 'var(--bg-glass)',
-                                        borderRadius: 'var(--radius-lg)'
-                                    }}>
-                                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🗺️</div>
-                                        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                                            {selectedReport.location?.address}
-                                        </p>
-                                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                                            Lat: {selectedReport.location?.lat?.toFixed(4)},
-                                            Lng: {selectedReport.location?.lng?.toFixed(4)}
-                                        </p>
-                                    </div>
+                                <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                                    <LocationMap key={selectedReport.id} location={selectedReport.location} height="200px" />
                                 </div>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.5rem', textAlign: 'center' }}>
+                                    {selectedReport.location?.address}
+                                </p>
                             </div>
 
                             {selectedReport.description && (
