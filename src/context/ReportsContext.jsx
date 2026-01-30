@@ -192,7 +192,7 @@ export function ReportsProvider({ children }) {
     const getUserReports = (userId) => {
         return {
             sos: sosReports.filter(r => r.userId === userId),
-            community: communityIssues.filter(i => i.userId === userId)
+            community: communityIssues.filter(i => i.reporterId === userId)
         }
     }
 

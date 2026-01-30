@@ -193,10 +193,10 @@ function Community() {
                                             fontWeight: 600,
                                             color: 'var(--text-primary)'
                                         }}>
-                                            {issue.userName?.charAt(0) || 'A'}
+                                            {issue.reporterName?.charAt(0) || 'A'}
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>{issue.userName || 'Anonymous'}</span>
+                                            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>{issue.reporterName || 'Anonymous'}</span>
                                             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{formatTime(issue.timestamp)}</span>
                                         </div>
                                     </div>
@@ -340,9 +340,9 @@ function Community() {
                             </div>
 
                             <div className="modal-reporter">
-                                <span className="reporter-avatar-lg">{selectedIssue.userName?.charAt(0)}</span>
+                                <span className="reporter-avatar-lg">{selectedIssue.reporterName?.charAt(0)}</span>
                                 <div>
-                                    <div className="reporter-name">{selectedIssue.userName}</div>
+                                    <div className="reporter-name">{selectedIssue.reporterName}</div>
                                     <div className="reporter-date">Reported on {new Date(selectedIssue.timestamp).toLocaleDateString()}</div>
                                 </div>
                             </div>
