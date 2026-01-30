@@ -20,7 +20,6 @@ function Community() {
     const handleVote = async (issueId, voteType, e) => {
         e.stopPropagation()
         await voteOnIssue(issueId, voteType)
-        toast.success(voteType === 'up' ? 'Upvoted!' : 'Downvoted')
     }
 
     const filterOptions = [

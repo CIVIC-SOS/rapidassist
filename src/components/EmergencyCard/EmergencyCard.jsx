@@ -45,7 +45,7 @@ function EmergencyCard({ type, title, number, onCall }) {
                     className="emergency-action-btn"
                     onClick={(e) => {
                         e.stopPropagation()
-                        console.log(`Forward to ${title}`)
+                        window.location.href = `tel:${number}`
                     }}
                     style={{ gridColumn: 'span 2' }}
                 >

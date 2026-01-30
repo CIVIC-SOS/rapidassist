@@ -10,6 +10,7 @@ function Home() {
 
     const handleEmergencyCall = (service) => {
         console.log(`Calling ${service.title} at ${service.number}`)
+        window.location.href = `tel:${service.number}`
         // In production, this would trigger actual emergency protocols
     }
 
