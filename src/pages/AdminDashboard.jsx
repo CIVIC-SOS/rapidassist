@@ -12,6 +12,7 @@ function AdminDashboard() {
     const toast = useToast()
     const [filter, setFilter] = useState('all')
     const [selectedReportId, setSelectedReportId] = useState(null)
+    const [quickViewReport, setQuickViewReport] = useState(null)
     const lastReportIdRef = useRef(null)
 
     // Derived: Get the full report object from the live context array
@@ -160,6 +161,30 @@ function AdminDashboard() {
                                     }}>
                                         {EMERGENCY_SERVICES[report.type]?.icon} {EMERGENCY_SERVICES[report.type]?.title}
                                     </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setQuickViewReport(report)
+                                        }}
+                                        style={{
+                                            background: 'rgba(99, 102, 241, 0.2)',
+                                            border: '1px solid rgba(99, 102, 241, 0.4)',
+                                            color: 'var(--primary)',
+                                            padding: '0.35rem 0.75rem',
+                                            borderRadius: '20px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.25rem'
+                                        }}
+                                    >
+                                        🤖 Details
+                                    </button>
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                     <span className={`status-badge ${report.status}`}>
                                         {STATUS_CONFIG[report.status]?.icon} {STATUS_CONFIG[report.status]?.label}
                                     </span>
@@ -260,45 +285,58 @@ function AdminDashboard() {
                                 </p>
                             </div>
 
-                            {selectedReport.medicalInfo && (
+                            {/* User Profile - Basic Info Only */}
+                            {selectedReport.userProfile && (
                                 <div className="detail-section">
-                                    <h4>🏥 Medical Information</h4>
-                                    <div className="medical-info">
-                                        <div className="info-row">
-                                            <span>Blood Group:</span>
-                                            <span className="blood-badge">{selectedReport.medicalInfo.bloodGroup}</span>
+                                    <h4>👤 User Details</h4>
+                                    <div className="user-profile-info" style={{ 
+                                        background: 'var(--bg-glass)', 
+                                        padding: '1rem', 
+                                        borderRadius: 'var(--radius-md)'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                            <span style={{ color: 'var(--text-muted)' }}>Name:</span>
+                                            <span style={{ fontWeight: 600 }}>{selectedReport.userProfile.name}</span>
                                         </div>
-                                        {selectedReport.medicalInfo.conditions?.length > 0 && (
-                                            <div className="info-row">
-                                                <span>Conditions:</span>
-                                                <div className="condition-tags">
-                                                    {selectedReport.medicalInfo.conditions.map(c => (
-                                                        <span key={c} className="condition-tag">{c}</span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                        {selectedReport.medicalInfo.allergies && (
-                                            <div className="info-row alert">
-                                                <span>Allergies:</span>
-                                                <span>{selectedReport.medicalInfo.allergies}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                            <span style={{ color: 'var(--text-muted)' }}>Mobile:</span>
+                                            <a href={`tel:${selectedReport.userProfile.mobile}`} style={{ color: 'var(--primary)', fontWeight: 600 }}>
+                                                📞 {selectedReport.userProfile.mobile}
+                                            </a>
+                                        </div>
+                                        {selectedReport.userProfile.gender && (
+                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <span style={{ color: 'var(--text-muted)' }}>Gender:</span>
+                                                <span style={{ textTransform: 'capitalize' }}>{selectedReport.userProfile.gender}</span>
                                             </div>
                                         )}
                                     </div>
-                                </div>
-                            )}
-
-                            {selectedReport.description && (
-                                <div className="detail-section">
-                                    <h4>Description</h4>
-                                    <p style={{ color: 'var(--text-secondary)' }}>
-                                        {selectedReport.description}
-                                    </p>
+                                    <button
+                                        onClick={() => setQuickViewReport(selectedReport)}
+                                        style={{
+                                            width: '100%',
+                                            marginTop: '0.75rem',
+                                            padding: '0.6rem 1rem',
+                                            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+                                            border: '1px solid rgba(99, 102, 241, 0.4)',
+                                            color: 'var(--primary)',
+                                            borderRadius: 'var(--radius-md)',
+                                            cursor: 'pointer',
+                                            fontWeight: 600,
+                                            fontSize: '0.875rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '0.5rem'
+                                        }}
+                                    >
+                                        🤖 View Health Summary & Contacts
+                                    </button>
                                 </div>
                             )}
 
                             {selectedReport.evidence && (
-                                <div className="detail-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
+                                <div className="detail-section">
                                     <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
                                         Multimedia Evidence
                                     </h4>
@@ -341,27 +379,6 @@ function AdminDashboard() {
                                     )}
                                 </div>
                             )}
-
-                            <div className="detail-section">
-                                <h4>📊 Status History</h4>
-                                <div className="status-timeline">
-                                    <div className="timeline-item completed">
-                                        <div className="timeline-dot"></div>
-                                        <div className="timeline-content">
-                                            <span>Report Submitted  &nbsp;&nbsp;</span>
-                                            <span className="timeline-time">{formatTime(selectedReport.timestamp)}</span>
-                                        </div>
-                                    </div>
-                                    {selectedReport.assignedTo && (
-                                        <div className="timeline-item completed">
-                                            <div className="timeline-dot"></div>
-                                            <div className="timeline-content">
-                                                <span>Assigned to {EMERGENCY_SERVICES[selectedReport.assignedTo]?.title}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
                         </>
                     ) : (
                         <div className="detail-empty">
@@ -371,6 +388,242 @@ function AdminDashboard() {
                     )}
                 </div>
             </div>
+
+            {/* Quick View Modal */}
+            {quickViewReport && (
+                <div 
+                    className="quick-view-overlay"
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 1000,
+                        padding: '1rem'
+                    }}
+                    onClick={() => setQuickViewReport(null)}
+                >
+                    <div 
+                        className="quick-view-modal"
+                        style={{
+                            background: 'var(--bg-card)',
+                            borderRadius: 'var(--radius-xl)',
+                            padding: '1.5rem',
+                            maxWidth: '400px',
+                            width: '100%',
+                            border: '1px solid var(--border)',
+                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                            animation: 'modalSlideIn 0.3s ease-out'
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between', 
+                            alignItems: 'center',
+                            marginBottom: '1rem',
+                            paddingBottom: '1rem',
+                            borderBottom: '1px solid var(--border)'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <div style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    background: EMERGENCY_SERVICES[quickViewReport.type]?.gradient,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '1.25rem'
+                                }}>
+                                    {EMERGENCY_SERVICES[quickViewReport.type]?.icon}
+                                </div>
+                                <div>
+                                    <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{quickViewReport.userName}</div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        {EMERGENCY_SERVICES[quickViewReport.type]?.title} Emergency
+                                    </div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setQuickViewReport(null)}
+                                style={{
+                                    background: 'var(--bg-glass)',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '32px',
+                                    height: '32px',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-secondary)',
+                                    fontSize: '1.25rem'
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* AI Summary */}
+                        <div style={{
+                            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                            border: '1px solid rgba(99, 102, 241, 0.3)',
+                            borderRadius: 'var(--radius-lg)',
+                            padding: '1rem',
+                            marginBottom: '1rem'
+                        }}>
+                            <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '0.5rem', 
+                                marginBottom: '0.5rem',
+                                color: 'var(--primary)',
+                                fontWeight: 600,
+                                fontSize: '0.875rem'
+                            }}>
+                                <span>🤖</span> AI Health Summary
+                            </div>
+                            <p style={{ 
+                                color: 'var(--text-primary)', 
+                                fontSize: '0.95rem', 
+                                lineHeight: 1.6,
+                                margin: 0
+                            }}>
+                                {quickViewReport.userProfile?.emergencySummary || 
+                                 `${quickViewReport.userName}, Blood Group: ${quickViewReport.medicalInfo?.bloodGroup || 'Unknown'}. ${quickViewReport.medicalInfo?.conditions?.length > 0 ? `Conditions: ${quickViewReport.medicalInfo.conditions.join(', ')}.` : 'No known conditions.'} ${quickViewReport.medicalInfo?.allergies && quickViewReport.medicalInfo.allergies !== 'None reported' ? `Allergies: ${quickViewReport.medicalInfo.allergies}.` : ''}`}
+                            </p>
+                        </div>
+
+                        {/* Medical Information */}
+                        {quickViewReport.medicalInfo && (
+                            <div style={{
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                borderRadius: 'var(--radius-lg)',
+                                padding: '1rem',
+                                marginBottom: '1rem'
+                            }}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '0.5rem', 
+                                    marginBottom: '0.75rem',
+                                    color: '#ef4444',
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem'
+                                }}>
+                                    <span>🏥</span> Medical Information
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Blood Group:</span>
+                                    <span style={{ 
+                                        background: '#ef4444', 
+                                        color: 'white', 
+                                        padding: '0.15rem 0.5rem', 
+                                        borderRadius: '12px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 700
+                                    }}>{quickViewReport.medicalInfo.bloodGroup}</span>
+                                </div>
+                                {quickViewReport.medicalInfo.conditions?.length > 0 && (
+                                    <div style={{ marginBottom: '0.5rem' }}>
+                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Conditions: </span>
+                                        <span style={{ fontSize: '0.875rem', color: 'var(--text-primary)' }}>
+                                            {quickViewReport.medicalInfo.conditions.join(', ')}
+                                        </span>
+                                    </div>
+                                )}
+                                {quickViewReport.medicalInfo.allergies && quickViewReport.medicalInfo.allergies !== 'None reported' && (
+                                    <div style={{ 
+                                        background: '#f59e0b', 
+                                        color: 'white', 
+                                        padding: '0.5rem 0.75rem', 
+                                        borderRadius: '8px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 600,
+                                        marginTop: '0.5rem'
+                                    }}>
+                                        ⚠️ Allergies: {quickViewReport.medicalInfo.allergies}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Emergency Contacts */}
+                        {quickViewReport.userProfile?.emergencyContacts?.length > 0 && (
+                            <div style={{ marginBottom: '1rem' }}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '0.5rem', 
+                                    marginBottom: '0.5rem',
+                                    color: 'var(--text-muted)',
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem'
+                                }}>
+                                    <span>📱</span> Emergency Contacts
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    {quickViewReport.userProfile.emergencyContacts.map((contact, i) => (
+                                        <div key={i} style={{ 
+                                            display: 'flex', 
+                                            justifyContent: 'space-between', 
+                                            alignItems: 'center',
+                                            padding: '0.5rem 0.75rem',
+                                            background: 'var(--bg-glass)',
+                                            borderRadius: 'var(--radius-sm)'
+                                        }}>
+                                            <div>
+                                                <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{contact.name}</div>
+                                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{contact.relation || 'Contact'}</div>
+                                            </div>
+                                            <a href={`tel:${contact.phone}`} style={{ 
+                                                background: 'var(--success)', 
+                                                color: 'white', 
+                                                padding: '0.35rem 0.75rem', 
+                                                borderRadius: '20px',
+                                                fontSize: '0.75rem',
+                                                textDecoration: 'none'
+                                            }}>
+                                                📞 {contact.phone}
+                                            </a>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Action Button - Only Assign */}
+                        {quickViewReport.status === 'submitted' && (
+                            <button
+                                onClick={() => {
+                                    handleAssign(quickViewReport.id, quickViewReport.type)
+                                    setQuickViewReport(null)
+                                }}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.75rem 1rem',
+                                    background: EMERGENCY_SERVICES[quickViewReport.type]?.gradient,
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: 'var(--radius-md)',
+                                    cursor: 'pointer',
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem'
+                                }}
+                            >
+                                Assign to {EMERGENCY_SERVICES[quickViewReport.type]?.title}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

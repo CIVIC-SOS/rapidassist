@@ -268,6 +268,88 @@ function FireAdmin() {
                                 </div>
                             )}
 
+                            {/* User Profile & Emergency Contacts */}
+                            {selectedReport.userProfile && (
+                                <div className="detail-section">
+                                    <h4>👤 Reporter Profile</h4>
+                                    <div style={{ 
+                                        background: 'var(--bg-glass)', 
+                                        padding: '1rem', 
+                                        borderRadius: 'var(--radius-md)',
+                                        marginBottom: '1rem'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                            <span style={{ color: 'var(--text-muted)' }}>Name:</span>
+                                            <span style={{ fontWeight: 600 }}>{selectedReport.userProfile.name}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                            <span style={{ color: 'var(--text-muted)' }}>Mobile:</span>
+                                            <a href={`tel:${selectedReport.userProfile.mobile}`} style={{ color: '#f97316', fontWeight: 600 }}>
+                                                📞 {selectedReport.userProfile.mobile}
+                                            </a>
+                                        </div>
+                                        {selectedReport.userProfile.gender && (
+                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <span style={{ color: 'var(--text-muted)' }}>Gender:</span>
+                                                <span style={{ textTransform: 'capitalize' }}>{selectedReport.userProfile.gender}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {selectedReport.userProfile.emergencySummary && (
+                                        <div style={{ 
+                                            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.1) 100%)',
+                                            border: '1px solid rgba(249, 115, 22, 0.3)',
+                                            padding: '1rem', 
+                                            borderRadius: 'var(--radius-md)',
+                                            marginBottom: '1rem'
+                                        }}>
+                                            <p style={{ fontSize: '0.75rem', color: '#f97316', marginBottom: '0.5rem', fontWeight: 600 }}>
+                                                🤖 AI Emergency Summary
+                                            </p>
+                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                                {selectedReport.userProfile.emergencySummary}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {selectedReport.userProfile.emergencyContacts?.length > 0 && (
+                                        <div>
+                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                                                📱 Emergency Contacts
+                                            </p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                {selectedReport.userProfile.emergencyContacts.map((contact, i) => (
+                                                    <div key={i} style={{ 
+                                                        display: 'flex', 
+                                                        justifyContent: 'space-between', 
+                                                        alignItems: 'center',
+                                                        padding: '0.5rem 0.75rem',
+                                                        background: 'var(--bg-glass)',
+                                                        borderRadius: 'var(--radius-sm)'
+                                                    }}>
+                                                        <div>
+                                                            <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{contact.name}</div>
+                                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{contact.relation || 'Contact'}</div>
+                                                        </div>
+                                                        <a href={`tel:${contact.phone}`} style={{ 
+                                                            background: '#f97316', 
+                                                            color: 'white', 
+                                                            padding: '0.35rem 0.75rem', 
+                                                            borderRadius: '20px',
+                                                            fontSize: '0.75rem',
+                                                            textDecoration: 'none'
+                                                        }}>
+                                                            📞 {contact.phone}
+                                                        </a>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {selectedReport.evidence && (
                                 <div className="detail-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
                                     <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>

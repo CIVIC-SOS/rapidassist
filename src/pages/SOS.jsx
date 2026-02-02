@@ -195,8 +195,19 @@ function SOS({ userId: propUserId }) {
             target: selectedTarget,
             userId: propUserId || user?.id || 'anonymous',
             userName: user?.name || 'Anonymous User',
+            userMobile: user?.mobile || null,
             location: location,
             timestamp: Date.now(),
+            // Full user profile for admin reference
+            userProfile: user ? {
+                name: user.name,
+                mobile: user.mobile,
+                dob: user.dob || null,
+                gender: user.gender || null,
+                emergencySummary: user.emergencySummary || null,
+                emergencyContacts: user.contacts || []
+            } : null,
+            // Medical information for quick access
             medicalInfo: user ? {
                 bloodGroup: user.bloodGroup || 'Not Specified',
                 conditions: Object.entries(user.medicalConditions || {})
